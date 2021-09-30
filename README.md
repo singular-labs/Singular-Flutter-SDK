@@ -37,7 +37,7 @@ You can add Singular Plugin to your Flutter app by adding following to your `pub
 
 ```yaml
 dependencies:
-  singular_flutter_sdk: ^0.0.2
+  singular_flutter_sdk: ^0.0.3
 ```
 
 Then navigate to your project in the terminal and run:
@@ -50,8 +50,8 @@ Before you initialize the Singular SDK, you have to create a SingularConfig obje
 
 *Example:*
 ```dart
-import 'package:flutter_sdk/singular.dart';
-import 'package:flutter_sdk/singular_config.dart';
+import 'package:singular_flutter_sdk/singular.dart';
+import 'package:singular_flutter_sdk/singular_config.dart';
 
 SingularConfig config = new SingularConfig('API_KEY', 'API_SECRET');
 config.customUserId = "test@test.com";
@@ -82,6 +82,8 @@ Report an IAP event to Singular
 
 *Example:*
 ```dart
+import 'package:singular_flutter_sdk/singular_iap.dart';
+
  singularPurchase = new SingularIOSIAP(
    product.price,
    product.currencyCode,

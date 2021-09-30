@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'singular_flutter_sdk'
-  s.version          = '0.0.2'
+  s.version          = '0.0.3'
   s.summary          = 'Singular flutter plugin project.'
   s.description      = <<-DESC
 Singular's flutter plugin project.
@@ -8,7 +8,7 @@ Singular's flutter plugin project.
   s.homepage         = 'https://www.singular.net/'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Singular Labs' => 'support@singular.net'}
-  s.source           = { :git => "https://github.com/singular-labs/flutter-sdk.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/singular-labs/Singular-Flutter-SDK.git", :tag => s.version.to_s }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
