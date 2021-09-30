@@ -1,7 +1,7 @@
 name: singular_flutter_sdk
 description: A Flutter plugin for Singular SDK.
-version: 0.0.2
-homepage: https://github.com/singular-labs/flutter-sdk.git
+version: 0.0.3
+homepage: https://github.com/singular-labs/Singular-Flutter-SDK.git
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

@@ -1,7 +1,7 @@
-## 0.0.2
+## 0.0.3
 
 Beta release.
 
-## 0.0.1
+## 0.0.2
 
-Test release.
+Beta release.

@@ -48,8 +48,6 @@ class MainPageState extends State<CustomEvent> {
               style: TextStyle(fontSize: 20.0),
             ),
             onPressed: () {
-              print('hey custom events');
-
               String eventName = textController.text;
               if (eventName.isEmpty) {
                 showDialog(

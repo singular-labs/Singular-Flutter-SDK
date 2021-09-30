@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
     SingularConfig config =
-        new SingularConfig('API_KEY', 'API_SECRET');
+         SingularConfig('API_KEY', 'API_SECRET');
     config.waitForTrackingAuthorizationWithTimeoutInterval = 60;
     config.skAdNetworkEnabled = true;
 
