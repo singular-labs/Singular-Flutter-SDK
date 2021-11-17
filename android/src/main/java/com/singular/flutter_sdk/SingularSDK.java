@@ -17,6 +17,8 @@ import io.flutter.plugin.common.MethodChannel.Result;
 
 import com.singular.sdk.*;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -273,7 +275,7 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
   private void eventWithArgs(final MethodCall call, final Result result) {
     String eventName =  call.argument("eventName");
     Map<String, Object> extra = call.argument("args");
-    Singular.event(eventName, extra.toString());
+    Singular.event(eventName, new JSONObject(extra).toString());
 }
 
   private void customRevenue(final MethodCall call, final Result result) {
