@@ -7,7 +7,7 @@ import 'package:singular_flutter_sdk/singular_iap.dart';
 
 const ADMON_REVENUE_EVENT_NAME = '__ADMON_USER_LEVEL_REVENUE__';
 const _SDK_NAME = 'Flutter';
-const _SDK_VERSION = '1.0.0';
+const _SDK_VERSION = '1.0.1';
 
 class Singular {
   static const MethodChannel _channel = const MethodChannel('singular-api');

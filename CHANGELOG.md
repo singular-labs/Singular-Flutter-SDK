@@ -1,3 +1,7 @@
+## 1.0.1
+
+Bug fix
+
 ## 1.0.0
 
 1. Android Install Referrer on first session.
