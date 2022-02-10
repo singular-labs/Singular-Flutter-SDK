@@ -126,6 +126,8 @@ Singular.init(config);
 ```
 **iOS Prerequisites**
 
+*Objective-C:*
+  
 In the project’s AppDelegate.m, add the following:
 
 ```objectivec
@@ -155,8 +157,40 @@ In the project’s AppDelegate.m, add the following:
 
   }
 ```
+  
+*Swift:*
+```swift  
+import singular_flutter_sdk
+
+override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    GeneratedPluginRegistrant.register(with: self)
+    if let singularAppDelegate = SingularAppDelegate.shared() {
+        singularAppDelegate.launchOptions = launchOptions
+    }
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+}
+    
+override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+    if let singularAppDelegate = SingularAppDelegate.shared() {
+        singularAppDelegate.continueUserActivity(userActivity, restorationHandler: nil)
+    }
+   return true
+}
+    
+override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    if let singularAppDelegate = SingularAppDelegate.shared() {
+        singularAppDelegate.handleOpen(url, options: options)
+    }
+   return true
+}
+    
+```
+  
 **Android Prerequisites**
 
+*Java:*  
+  
 In the project’s MainActivity.java, add the following:
 
 ```java
@@ -169,6 +203,19 @@ protected void onNewIntent(@NonNull Intent intent) {
   SingularBridge.onNewIntent(intent);
 }
 ```
+ 
+*Kotlin:*
+  
+```java
+
+import com.singular.flutter_sdk.SingularBridge;
+
+override fun onNewIntent(intent: Intent) {
+  super.onNewIntent(intent)
+  SingularBridge.onNewIntent(intent);
+}
+```
+
 
 ## <a id="skadnetwork-support">  Adding SKAdNetwork Support
 
