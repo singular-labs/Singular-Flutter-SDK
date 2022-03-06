@@ -1,3 +1,8 @@
+## 1.0.3
+
+ANDI was not sent when aifa and asid were zeroed out
+
+
 ## 1.0.2
 
 Improve ASID handling
