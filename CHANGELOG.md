@@ -1,3 +1,9 @@
+## 1.0.4
+
+1. Better support for OAID
+2. Updated support for Google billing library 4.0.0+
+3. Added additional IDFV functionality
+
 ## 1.0.3
 
 Improve Android Identifiers collection
