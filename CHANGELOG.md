@@ -1,3 +1,7 @@
+## 1.0.5
+
+Support advanced Deferred deep linking options
+
 ## 1.0.4
 
 1. Better support for OAID

@@ -86,6 +86,7 @@ static NSDictionary *configDict;
     NSString *apiKey = configDict[@"apiKey"];
     NSString *secretKey = configDict[@"secretKey"];
     BOOL skAdNetworkEnabled = [configDict[@"skAdNetworkEnabled"] boolValue];
+    BOOL clipboardAttribution = [configDict[@"clipboardAttribution"] boolValue]; 
     BOOL manualSkanConversionManagement = [configDict[@"manualSkanConversionManagement"] boolValue];
     int waitForTrackingAuthorizationWithTimeoutInterval = [configDict[@"waitForTrackingAuthorizationWithTimeoutInterval"] intValue];
     float shortLinkResolveTimeOut = [configDict[@"shortLinkResolveTimeOut"] floatValue];
@@ -93,6 +94,7 @@ static NSDictionary *configDict;
 
     SingularConfig* config = [[SingularConfig alloc] initWithApiKey:apiKey andSecret:secretKey];
     config.skAdNetworkEnabled = skAdNetworkEnabled;
+    config.clipboardAttribution = clipboardAttribution;
     config.manualSkanConversionManagement = manualSkanConversionManagement;
     config.waitForTrackingAuthorizationWithTimeoutInterval = waitForTrackingAuthorizationWithTimeoutInterval;
     config.shortLinkResolveTimeOut = shortLinkResolveTimeOut;

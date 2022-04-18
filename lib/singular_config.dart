@@ -10,6 +10,7 @@ class SingularConfig {
   String _apiKey;
   String _secretKey;
   bool skAdNetworkEnabled = false;
+  bool clipboardAttribution = false;
   bool manualSkanConversionManagement = false;
   int waitForTrackingAuthorizationWithTimeoutInterval = 0;
   double shortLinkResolveTimeOut = 10.0;
@@ -52,6 +53,7 @@ class SingularConfig {
       'apiKey': _apiKey,
       'secretKey': _secretKey,
       'skAdNetworkEnabled': skAdNetworkEnabled,
+      'clipboardAttribution': clipboardAttribution,
       'manualSkanConversionManagement': manualSkanConversionManagement,
       'waitForTrackingAuthorizationWithTimeoutInterval':
           waitForTrackingAuthorizationWithTimeoutInterval,
