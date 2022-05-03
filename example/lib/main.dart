@@ -99,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
          SingularConfig('API_KEY', 'API_SECRET');
     config.waitForTrackingAuthorizationWithTimeoutInterval = 60;
     config.skAdNetworkEnabled = true;
+    config.clipboardAttribution = true;
 
     config.singularLinksHandler = (SingularLinkParams params) {
       print('Received deferred deeplink: ');
