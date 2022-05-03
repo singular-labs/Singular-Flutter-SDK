@@ -1,3 +1,7 @@
+## 1.0.6
+
+Improve support for non google identifiers
+
 ## 1.0.5
 
 Support advanced Deferred deep linking options
