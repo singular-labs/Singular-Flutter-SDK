@@ -45,6 +45,6 @@ if __name__ == '__main__':
     attributes_data = structEventsCommon.read_data("attributes",args.tmp_dir)
     generate_code(events_data, "events")
     generate_code(attributes_data, "attributes")
-    structEventsCommon.update_zendesk_structured_events("6481712055323", events_data, attributes_data, format_var_name )
+    structEventsCommon.update_zendesk_structured_events("6573481580827", events_data, attributes_data, format_var_name )
     if not args.skip_repo:
         structEventsCommon.delete_repo(args.tmp_dir)
