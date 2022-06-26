@@ -9,10 +9,14 @@ const ADMON_REVENUE_EVENT_NAME = '__ADMON_USER_LEVEL_REVENUE__';
 const _SDK_NAME = 'Flutter';
 const _SDK_VERSION = '1.0.6';
 
+typedef void ShortLinkCallback(String ? data, String ? error);
+
 class Singular {
   static const MethodChannel _channel = const MethodChannel('singular-api');
+  static SingularConfig ? singularConfig;
 
   static void start(SingularConfig config) {
+    singularConfig = config;
     _setWrapperNameAndVersion(_SDK_NAME, _SDK_VERSION);
     _channel.invokeMethod('start', config.toMap);
   }
@@ -193,4 +197,26 @@ class Singular {
     _channel.invokeMethod('eventWithArgs',
         {'eventName': ADMON_REVENUE_EVENT_NAME, 'args': adData});
   }
+
+
+  
+  static void createReferrerShortLink(String baseLink,
+                                        String referrerName,
+                                        String referrerId,
+                                        Map args,
+                                        ShortLinkCallback shortLinkCallback){
+
+    _channel.invokeMethod('createReferrerShortLink',
+    {
+      'baseLink': baseLink, 
+      'referrerName': referrerName,
+      'referrerId': referrerId,
+      'args': args
+    });
+
+    singularConfig?.setShortLinkCallback(shortLinkCallback);
+  }
+  
+
+  
 }

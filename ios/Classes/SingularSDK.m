@@ -69,7 +69,9 @@ static NSDictionary *configDict;
         [self skanUpdateConversionValue:call withResult:result];
     } else if ([SKAN_GET_CONVERSION_VALUE isEqualToString:call.method]) {
         [self skanGetConversionValue:call withResult:result];
-    } else {
+    } else if ([CREATE_REFERRER_SHORT_LINK isEqualToString:call.method]) {
+        [self createReferrerShortLink:call withResult:result];
+    }else {
         result(FlutterMethodNotImplemented);
     }
 }
@@ -201,6 +203,26 @@ static NSDictionary *configDict;
     double productPrice = [call.arguments[@"productPrice"] doubleValue];
     [Singular customRevenue:eventName currency:currency amount:amount productSKU:productSKU productName:productName productCategory:productCategory productQuantity:productQuantity productPrice:productPrice];
 }
+
+
+- (void)createReferrerShortLink:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *baseLink =  call.arguments[@"baseLink"];
+    NSString *referrerName =  call.arguments[@"referrerName"];
+    NSString *referrerId =  call.arguments[@"referrerId"];
+    NSDictionary *args = call.arguments[@"args"];
+
+    [Singular createReferrerShortLink:baseLink
+                        referrerName:referrerName
+                        referrerId:referrerId
+                        passthroughParams:args
+                        completionHandler:^(NSString *data, NSError *error) {
+                            NSMutableDictionary *linkParams = [[NSMutableDictionary alloc] init];
+                            [linkParams setValue:data forKey:@"data"];
+                            [linkParams setValue:error forKey:@"error"];
+                            [channel invokeMethod:@"shortLinkCallbackName" arguments:linkParams];
+    }];
+}
+
 
 - (void)setWrapperNameAndVersion:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *wrapperName =  call.arguments[@"name"];

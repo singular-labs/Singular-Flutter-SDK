@@ -23,3 +23,4 @@
 #define SKAN_REGISTER_APP_FOR_AD_ATTRIBUTION @"skanRegisterAppForAdNetworkAttribution"
 #define SKAN_UPDATE_CONVERSION_VALUE @"skanUpdateConversionValue"
 #define SKAN_GET_CONVERSION_VALUE @"skanGetConversionValue"
+#define CREATE_REFERRER_SHORT_LINK @"createReferrerShortLink"

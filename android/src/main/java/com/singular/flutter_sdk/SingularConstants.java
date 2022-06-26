@@ -24,5 +24,6 @@ public class SingularConstants {
     final static String GET_LIMIT_DATA_SHARING = "getLimitDataSharing";
     final static String SET_FCM_TOKEN = "setFCMDeviceToken";
     final static String SET_GCM_TOKEN = "setGCMDeviceToken";
+    final static String CREATE_REFERRER_SHORT_LINK = "createReferrerShortLink";
 }
 

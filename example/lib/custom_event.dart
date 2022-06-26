@@ -124,7 +124,31 @@ class MainPageState extends State<CustomEvent> {
               );
             },
           ),
+        ),
+          Center(
+          child: TextButton(
+            child: Text(
+              'Short link',
+              style: TextStyle(fontSize: 20.0),
+            ),
+            onPressed: () {
+              Map<String, dynamic> args = {"channel": "sms"};
+              // Reporting a simple event to Singular
+              Singular.createReferrerShortLink("https://sample.sng.link/B4tbm/v8fp?_dl=https%3A%2F%2Fabc.com",  "refName", "refID",  args, (String ? data, String ? error) {
+                showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Text("link: " + (data!=null?data:"") + " error: " + (error!=null?error:"") ),
+                  );
+                },
+              );
+              });
+
+            },
+          ),
         )
+        
       ],
     );
   }
