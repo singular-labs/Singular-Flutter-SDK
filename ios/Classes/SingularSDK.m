@@ -217,8 +217,14 @@ static NSDictionary *configDict;
                         passthroughParams:args
                         completionHandler:^(NSString *data, NSError *error) {
                             NSMutableDictionary *linkParams = [[NSMutableDictionary alloc] init];
-                            [linkParams setValue:data forKey:@"data"];
-                            [linkParams setValue:error forKey:@"error"];
+                            if (data != nil){
+                                [linkParams setValue:data forKey:@"data"];
+                            }
+                            if (error != nil){
+                                [linkParams setValue:error.description forKey:@"error"];
+                            }
+                            
+                            
                             [channel invokeMethod:@"shortLinkCallbackName" arguments:linkParams];
     }];
 }
