@@ -14,6 +14,9 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.singular.sdk.*;
 
@@ -21,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import android.util.Log;
 
 
 /** FlutterSdkPlugin */
@@ -151,6 +155,10 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
         break;
       case SingularConstants.REGISTER_DEVICE_TOKEN_FOR_UNINSTALL:
         setFCMDeviceToken(call, result);
+        break;
+
+      case SingularConstants.CREATE_REFERRER_SHORT_LINK:
+        createReferrerShortLink(call, result);
         break;
       default:
         result.notImplemented();
@@ -359,5 +367,48 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     String version =  call.argument("version");
 
     Singular.setWrapperNameAndVersion(name, version);
+  }
+
+  private void createReferrerShortLink(final MethodCall call, final Result result) {
+    String baseLink =  call.argument("baseLink");
+    String referrerName =  call.argument("referrerName");
+    String referrerId =  call.argument("referrerId");
+    Map args = call.argument("args");
+    JSONObject params = new JSONObject(args);
+
+
+    Singular.createReferrerShortLink(baseLink,
+                referrerName,
+                referrerId,
+                params,
+                new ShortLinkHandler() {
+                    @Override
+                    public void onSuccess(final String link) {
+                      uiThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                          final Map<String, Object> linkParams = new HashMap<>();
+                          linkParams.put("data", link);
+                          linkParams.put("error", null);
+                          channel.invokeMethod("shortLinkCallbackName",linkParams);
+                        }
+                      });
+                    }
+
+                    @Override
+                    public void onError(final String error) {
+                      uiThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                          final Map<String, Object> linkParams = new HashMap<>();
+                          linkParams.put("data", null);
+                          linkParams.put("error", error);
+                          channel.invokeMethod("shortLinkCallbackName",linkParams);
+                        }
+                      });
+                    }
+                });
+
+
   }
 }

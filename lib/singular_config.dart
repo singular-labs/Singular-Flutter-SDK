@@ -3,6 +3,7 @@ import 'package:singular_flutter_sdk/singular_link_params.dart';
 
 typedef void SingularLinksHandler(SingularLinkParams params);
 typedef void ConversionValueUpdatedCallback(int conversionValue);
+typedef void ShortLinkCallback(String ? data, String ? error);
 
 class SingularConfig {
   static const MethodChannel _channel = const MethodChannel('singular-api');
@@ -23,8 +24,12 @@ class SingularConfig {
   String? imei;
   bool collectOAID = false;
   bool enableLogging = false;
+  ShortLinkCallback ? shortLinkCallback;
+
+
 
   SingularConfig(this._apiKey, this._secretKey) {
+
     _channel.setMethodCallHandler((MethodCall call) async {
       try {
         switch (call.method) {
@@ -33,6 +38,13 @@ class SingularConfig {
               singularLinksHandler!(SingularLinkParams.fromMap(call.arguments));
             }
             break;
+          case 'shortLinkCallbackName':
+            if (shortLinkCallback != null){
+              shortLinkCallback?.call(call.arguments['data'], call.arguments['error']);
+              shortLinkCallback = null;
+            }
+            break;
+
           case 'conversionValueUpdatedCallbackName':
             if (conversionValueUpdatedCallback != null) {
               conversionValueUpdatedCallback!(call.arguments);
@@ -80,4 +92,7 @@ class SingularConfig {
     configMap['enableLogging'] = enableLogging;
     return configMap;
   }
+  void setShortLinkCallback(ShortLinkCallback shortLinkCallback){
+    this.shortLinkCallback = shortLinkCallback;
+  } 
 }

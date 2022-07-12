@@ -1,3 +1,7 @@
+## 1.0.7
+
+Added Referrer link helper functions
+
 ## 1.0.6
 
 Improve support for non google identifiers
