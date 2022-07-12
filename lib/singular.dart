@@ -7,7 +7,7 @@ import 'package:singular_flutter_sdk/singular_iap.dart';
 
 const ADMON_REVENUE_EVENT_NAME = '__ADMON_USER_LEVEL_REVENUE__';
 const _SDK_NAME = 'Flutter';
-const _SDK_VERSION = '1.0.6';
+const _SDK_VERSION = '1.0.7';
 
 typedef void ShortLinkCallback(String ? data, String ? error);
 

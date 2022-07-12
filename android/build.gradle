@@ -31,5 +31,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.singular.sdk:singular_sdk:12.0.5'
+    implementation 'com.singular.sdk:singular_sdk:12.0.6'
 }
