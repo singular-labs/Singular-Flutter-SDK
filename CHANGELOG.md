@@ -1,3 +1,8 @@
+## 1.0.8
+
+Android: Support Android Billing library V5, Standard Events, minor improvements
+iOS: Standard Events, minor improvements
+
 ## 1.0.7
 
 Added Referrer link helper functions
