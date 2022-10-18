@@ -1,3 +1,7 @@
+## 1.0.9
+
+Minor improvements
+
 ## 1.0.8
 
 Android: Support Android Billing library V5, Standard Events, minor improvements
