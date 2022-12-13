@@ -13,13 +13,9 @@ class Attributes{
 	static String get sngAttrHotelScore => "sng_attr_hotel_score";
 	static String get sngAttrItemDescription => "sng_attr_item_description";
 	static String get sngAttrItemPrice => "sng_attr_item_price";
-	static String get sngAttrLatitude => "sng_attr_latitude";
 	static String get sngAttrLevel => "sng_attr_level";
-	static String get sngAttrLocation => "sng_attr_location";
-	static String get sngAttrLocationAddressCountry => "sng_attr_location_address_country";
-	static String get sngAttrLocationAddressRegionOrProvince => "sng_attr_location_address_region_or_province";
-	static String get sngAttrLocationAddressStreet => "sng_attr_location_address_street";
-	static String get sngAttrLongitude => "sng_attr_longitude";
+	static String get sngAttrCountry => "sng_attr_country";
+	static String get sngAttrRegion => "sng_attr_region";
 	static String get sngAttrMax => "sng_attr_max";
 	static String get sngAttrNewVersion => "sng_attr_new_version";
 	static String get sngAttrOrigin => "sng_attr_origin";
