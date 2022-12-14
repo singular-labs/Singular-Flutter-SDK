@@ -67,6 +67,8 @@ static NSDictionary *configDict;
         [Singular skanRegisterAppForAdNetworkAttribution];
     } else if ([SKAN_UPDATE_CONVERSION_VALUE isEqualToString:call.method]) {
         [self skanUpdateConversionValue:call withResult:result];
+    } else if ([SKAN_UPDATE_CONVERSION_VALUES isEqualToString:call.method]) {
+        [self skanUpdateConversionValues:call withResult:result];
     } else if ([SKAN_GET_CONVERSION_VALUE isEqualToString:call.method]) {
         [self skanGetConversionValue:call withResult:result];
     } else if ([CREATE_REFERRER_SHORT_LINK isEqualToString:call.method]) {
@@ -142,6 +144,17 @@ static NSDictionary *configDict;
         }
     };
 
+    config.conversionValuesUpdatedCallback = ^(NSNumber *conversionValue, NSNumber *coarse, BOOL lock) {
+        NSString *conversionValuesUpdatedCallback = configDict[@"conversionValuesUpdatedCallback"];
+        if (conversionValuesUpdatedCallback != nil) {
+            NSMutableDictionary *updatedConversionValues = [[NSMutableDictionary alloc] init];
+            [updatedConversionValues setValue:(conversionValue != nil) ? @([conversionValue integerValue]) : @(-1) forKey:@"conversionValue"];
+            [updatedConversionValues setValue:(coarse != nil) ? @([coarse integerValue]) : @(-1) forKey:@"coarse"];
+            [updatedConversionValues setValue:@(lock) forKey:@"lock"];
+
+            [channel invokeMethod:@"conversionValuesUpdatedCallbackName" arguments:updatedConversionValues];
+        }
+    };
     [Singular start:config];
 }
 
@@ -204,7 +217,6 @@ static NSDictionary *configDict;
     [Singular customRevenue:eventName currency:currency amount:amount productSKU:productSKU productName:productName productCategory:productCategory productQuantity:productQuantity productPrice:productPrice];
 }
 
-
 - (void)createReferrerShortLink:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *baseLink =  call.arguments[@"baseLink"];
     NSString *referrerName =  call.arguments[@"referrerName"];
@@ -228,7 +240,6 @@ static NSDictionary *configDict;
                             [channel invokeMethod:@"shortLinkCallbackName" arguments:linkParams];
     }];
 }
-
 
 - (void)setWrapperNameAndVersion:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *wrapperName =  call.arguments[@"name"];
@@ -258,6 +269,14 @@ static NSDictionary *configDict;
     if ([self isFieldValid:conversionValue]) {
         result(@([Singular skanUpdateConversionValue:[conversionValue integerValue]]));
     }
+}
+
+- (void)skanUpdateConversionValues:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *conversionValue =  call.arguments[@"conversionValue"];
+    NSString *coarse =  call.arguments[@"coarse"];
+    BOOL lock =  [call.arguments[@"lock"] boolValue];
+
+    [Singular skanUpdateConversionValue:[conversionValue integerValue] coarse:[coarse integerValue] lock:lock];
 }
 
 - (void)skanGetConversionValue:(FlutterMethodCall *)call withResult:(FlutterResult)result {
