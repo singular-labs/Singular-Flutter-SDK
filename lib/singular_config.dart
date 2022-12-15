@@ -4,6 +4,7 @@ import 'package:singular_flutter_sdk/singular_link_params.dart';
 typedef void SingularLinksHandler(SingularLinkParams params);
 typedef void ConversionValueUpdatedCallback(int conversionValue);
 typedef void ShortLinkCallback(String ? data, String ? error);
+typedef void ConversionValuesUpdatedCallback(int conversionValue, int coarse, bool lock);
 
 class SingularConfig {
   static const MethodChannel _channel = const MethodChannel('singular-api');
@@ -17,6 +18,7 @@ class SingularConfig {
   double shortLinkResolveTimeOut = 10.0;
   SingularLinksHandler? singularLinksHandler;
   ConversionValueUpdatedCallback? conversionValueUpdatedCallback;
+  ConversionValuesUpdatedCallback? conversionValuesUpdatedCallback;
   double sessionTimeout = -1;
   String? customUserId;
   // Limit Data Sharing
@@ -50,6 +52,11 @@ class SingularConfig {
               conversionValueUpdatedCallback!(call.arguments);
             }
             break;
+          case 'conversionValuesUpdatedCallbackName':
+            if (conversionValuesUpdatedCallback != null) {
+              conversionValuesUpdatedCallback!(call.arguments['conversionValue'], call.arguments['coarse'], call.arguments['lock']);
+            }
+            break;
           default:
             print('Received unknown native method: ${call.method}');
             break;
@@ -77,6 +84,10 @@ class SingularConfig {
     if (conversionValueUpdatedCallback != null) {
       configMap['conversionValueUpdatedCallback'] =
           'conversionValueUpdatedCallbackName';
+    }
+    if (conversionValuesUpdatedCallback != null) {
+      configMap['conversionValuesUpdatedCallback'] =
+      'conversionValuesUpdatedCallbackName';
     }
     if (customUserId != null) {
       configMap['customUserId'] = customUserId;

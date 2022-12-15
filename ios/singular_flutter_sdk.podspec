@@ -13,7 +13,7 @@ Singular's flutter plugin project.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.platform = :ios, '9.0'
-  s.ios.dependency 'Singular-SDK'
+  s.ios.dependency 'Singular-SDK', '12.0.1'
   s.static_framework = true
 
   # Flutter.framework does not contain a i386 slice.

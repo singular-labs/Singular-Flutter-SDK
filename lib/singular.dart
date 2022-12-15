@@ -170,6 +170,11 @@ class Singular {
     return isConversionValueUpdated;
   }
 
+  static void skanUpdateConversionValues(int conversionValue, int coarse, bool lock) {
+    _channel.invokeMethod(
+        'skanUpdateConversionValues', {'conversionValue': conversionValue, 'coarse': coarse, 'lock': lock});
+  }
+
   static Future<num> skanGetConversionValue() async {
     final num conversionValue =
         await _channel.invokeMethod('skanUpdateConversionValue');
