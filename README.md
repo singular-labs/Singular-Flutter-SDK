@@ -25,9 +25,9 @@ A Flutter plugin for Singular SDK.
 
 ### This plugin is built for
 
-- iOS SingularSDK **v11.0.2**
+- iOS SingularSDK **v12.0.1**
 
-- Android SingularSDK **v12.0.0**
+- Android SingularSDK **v12.0.9**
 
 ---
 
