@@ -52,7 +52,7 @@ class SingularConfig {
               conversionValueUpdatedCallback!(call.arguments);
             }
             break;
-          case 'conversionValuesUpdatedCallback':
+          case 'conversionValuesUpdatedCallbackName':
             if (conversionValuesUpdatedCallback != null) {
               conversionValuesUpdatedCallback!(call.arguments['conversionValue'], call.arguments['coarse'], call.arguments['lock']);
             }
@@ -84,6 +84,10 @@ class SingularConfig {
     if (conversionValueUpdatedCallback != null) {
       configMap['conversionValueUpdatedCallback'] =
           'conversionValueUpdatedCallbackName';
+    }
+    if (conversionValuesUpdatedCallback != null) {
+      configMap['conversionValuesUpdatedCallback'] =
+      'conversionValuesUpdatedCallbackName';
     }
     if (customUserId != null) {
       configMap['customUserId'] = customUserId;
