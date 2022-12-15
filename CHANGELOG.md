@@ -1,3 +1,6 @@
+## 1.0.10
+SKAN4 support
+
 ## 1.0.9
 
 Minor improvements
