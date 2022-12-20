@@ -112,6 +112,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       print('Received conversionValueUpdatedCallback: ' +
           conversionValue.toString());
     };
+    config.conversionValuesUpdatedCallback = (int conversionValue, int coarse, bool lock) {
+      print('Received conversionValuesUpdatedCallback: ' +
+          conversionValue.toString() + ' coarse: ' + coarse.toString() + ' lock: ' +  (lock? 'true':'false'));
+    };
+    config.manualSkanConversionManagement = true;
     Singular.start(config);
   }
 
