@@ -118,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           conversionValue.toString() + ' coarse: ' + coarse.toString() + ' lock: ' +  (lock? 'true':'false'));
     };
     config.manualSkanConversionManagement = true;
-    Singular.skanUpdateConversionValues(1, 2, true);
     Singular.start(config);
   }
 
