@@ -101,22 +101,23 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     config.waitForTrackingAuthorizationWithTimeoutInterval = 60;
     config.skAdNetworkEnabled = true;
     config.clipboardAttribution = true;
-
     config.singularLinksHandler = (SingularLinkParams params) {
       print('Received deferred deeplink: ');
-
       deeplinkParams['deeplink'] = params.deeplink;
       deeplinkParams['passthrough'] = params.passthrough;
       deeplinkParams['isDeferred'] = params.isDeferred;
     };
+    
     config.conversionValueUpdatedCallback = (int conversionValue) {
       print('Received conversionValueUpdatedCallback: ' +
           conversionValue.toString());
     };
+    
     config.conversionValuesUpdatedCallback = (int conversionValue, int coarse, bool lock) {
       print('Received conversionValuesUpdatedCallback: ' +
-          conversionValue.toString() + ' coarse: ' + coarse.toString() + ' lock: ' +  (lock? 'true':'false'));
+          conversionValue.toString() + ' coarse: ' + coarse.toString() + ' lock: ' +  (lock ? 'true' : 'false'));
     };
+    
     config.manualSkanConversionManagement = true;
     Singular.start(config);
   }
