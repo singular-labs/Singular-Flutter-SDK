@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:example/custom_event.dart';
 import 'package:example/identity.dart';
 import 'package:example/revenue.dart';
+import 'package:example/skan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -100,25 +101,31 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     config.waitForTrackingAuthorizationWithTimeoutInterval = 60;
     config.skAdNetworkEnabled = true;
     config.clipboardAttribution = true;
-
     config.singularLinksHandler = (SingularLinkParams params) {
       print('Received deferred deeplink: ');
-
       deeplinkParams['deeplink'] = params.deeplink;
       deeplinkParams['passthrough'] = params.passthrough;
       deeplinkParams['isDeferred'] = params.isDeferred;
     };
+    
     config.conversionValueUpdatedCallback = (int conversionValue) {
       print('Received conversionValueUpdatedCallback: ' +
           conversionValue.toString());
     };
+    
+    config.conversionValuesUpdatedCallback = (int conversionValue, int coarse, bool lock) {
+      print('Received conversionValuesUpdatedCallback: ' +
+          conversionValue.toString() + ' coarse: ' + coarse.toString() + ' lock: ' +  (lock ? 'true' : 'false'));
+    };
+    
+    config.manualSkanConversionManagement = true;
     Singular.start(config);
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 4,
+        length: 5,
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
@@ -127,6 +134,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               Tab(text: "Revenue", icon: Icon(Icons.monetization_on)),
               Tab(text: "Identity", icon: Icon(Icons.person)),
               Tab(text: "Deep Links", icon: Icon(Icons.insert_link)),
+              Tab(text: "SKAN", icon: Icon(Icons.bar_chart))
             ]),
           ),
           body: TabBarView(children: <Widget>[
@@ -134,6 +142,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             Revenue(),
             Identity(),
             Deeplink(deeplinkParams),
+            Skan()
           ]),
         ));
   }
