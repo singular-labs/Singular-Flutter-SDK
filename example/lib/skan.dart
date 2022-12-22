@@ -54,20 +54,17 @@ class MainPageState extends State<Skan> {
             onPressed: () {
               print('updating conversion vlue' + fineValueTextController.text);
               int? fineValue = int.tryParse(fineValueTextController.text);
-              if (fineValue == null  || fineValue < 0) {
+              if (fineValue == null  || fineValue < 0 || fineValue > 63) {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      // Retrieve the text the that user has entered by using the
-                      // TextEditingController.
-                      content: Text("Please enter a valid fine value"),
+                      content: Text("Please enter a valid fine value: 0 < value < 63"),
                     );
                   },
                 );
                 return;
               }
-
 
               Singular.skanUpdateConversionValue(fineValue);
 
@@ -75,8 +72,6 @@ class MainPageState extends State<Skan> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    // Retrieve the text the that user has entered by using the
-                    // TextEditingController.
                     content: Text("Conversion value updated"),
                   );
                 },
@@ -91,7 +86,7 @@ class MainPageState extends State<Skan> {
               style: TextStyle(fontSize: 20.0),
             ),
             onPressed: () {
-              print('updating conversion vlue: ' + fineValueTextController.text + ' coarse: ' + coarseValueTextController.text);
+              print('updating conversion vlue: ' + fineValueTextController.text + 'coarse: ' + coarseValueTextController.text);
               int? fineValue = int.tryParse(fineValueTextController.text);
               int? coarseValue = int.tryParse(coarseValueTextController.text);
               if (fineValue == null  || fineValue < 0) {
@@ -99,8 +94,6 @@ class MainPageState extends State<Skan> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      // Retrieve the text the that user has entered by using the
-                      // TextEditingController.
                       content: Text("Please enter a valid fine value"),
                     );
                   },
@@ -108,20 +101,17 @@ class MainPageState extends State<Skan> {
                 return;
               }
 
-              if (coarseValue == null  || coarseValue < 0) {
+              if (coarseValue == null  || coarseValue < 0 || coarseValue > 2) {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      // Retrieve the text the that user has entered by using the
-                      // TextEditingController.
-                      content: Text("Please enter a valid coarse value"),
+                      content: Text("Please enter a valid coarse value: [0,1,2]"),
                     );
                   },
                 );
                 return;
               }
-
 
               Singular.skanUpdateConversionValues(fineValue, coarseValue, false);
 
@@ -129,8 +119,6 @@ class MainPageState extends State<Skan> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    // Retrieve the text the that user has entered by using the
-                    // TextEditingController.
                     content: Text("Conversion value updated"),
                   );
                 },
