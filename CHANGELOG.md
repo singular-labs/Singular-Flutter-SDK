@@ -1,3 +1,6 @@
+## 1.0.11
+Improved SKAN 4 support
+
 ## 1.0.10
 SKAN4 support
 
