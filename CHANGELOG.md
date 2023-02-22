@@ -1,3 +1,6 @@
+## 1.0.12
+Bug fixes
+
 ## 1.0.11
 Improved SKAN 4 support
 
