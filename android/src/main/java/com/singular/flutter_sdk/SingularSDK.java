@@ -237,7 +237,9 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
         uiThreadHandler.post(new Runnable() {
           @Override
           public void run() {
-            channel.invokeMethod("singularLinksHandlerName",linkParams);
+            if (channel != null){
+              channel.invokeMethod("singularLinksHandlerName",linkParams);
+            } 
           }
         });
       }
@@ -390,7 +392,9 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
                           final Map<String, Object> linkParams = new HashMap<>();
                           linkParams.put("data", link);
                           linkParams.put("error", null);
-                          channel.invokeMethod("shortLinkCallbackName",linkParams);
+                          if (channel != null){
+                            channel.invokeMethod("shortLinkCallbackName",linkParams);
+                          }
                         }
                       });
                     }
@@ -403,7 +407,9 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
                           final Map<String, Object> linkParams = new HashMap<>();
                           linkParams.put("data", null);
                           linkParams.put("error", error);
-                          channel.invokeMethod("shortLinkCallbackName",linkParams);
+                          if (channel != null){
+                            channel.invokeMethod("shortLinkCallbackName",linkParams);
+                          }
                         }
                       });
                     }
