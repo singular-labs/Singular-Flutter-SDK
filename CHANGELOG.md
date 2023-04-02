@@ -1,5 +1,6 @@
 ## 1.0.13
-Bug fixes
+Fix: iOS - SKAN improvements.
+iOS - deep link from warm start up fix
 
 ## 1.0.12
 Bug fixes
