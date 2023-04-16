@@ -107,6 +107,9 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       deeplinkParams['passthrough'] = params.passthrough;
       deeplinkParams['isDeferred'] = params.isDeferred;
     };
+
+    config.withGlobalProperty("key1", "value1", true);
+    config.withGlobalProperty("key2", "value2", true);
     
     config.conversionValueUpdatedCallback = (int conversionValue) {
       print('Received conversionValueUpdatedCallback: ' +

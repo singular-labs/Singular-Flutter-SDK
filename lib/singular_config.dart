@@ -1,5 +1,8 @@
 import 'package:flutter/services.dart';
+import 'dart:collection';
 import 'package:singular_flutter_sdk/singular_link_params.dart';
+import 'package:singular_flutter_sdk/singular_global_property.dart';
+
 
 typedef void SingularLinksHandler(SingularLinkParams params);
 typedef void ConversionValueUpdatedCallback(int conversionValue);
@@ -27,6 +30,7 @@ class SingularConfig {
   bool collectOAID = false;
   bool enableLogging = false;
   ShortLinkCallback ? shortLinkCallback;
+  List<SingularGlobalProperty> globalProperties = [];
 
 
 
@@ -101,9 +105,18 @@ class SingularConfig {
     configMap['sessionTimeout'] = sessionTimeout;
     configMap['collectOAID'] = collectOAID;
     configMap['enableLogging'] = enableLogging;
+    List<Map<String, dynamic>> propertiesList = [];
+    for (SingularGlobalProperty prop in this.globalProperties){
+      propertiesList.add(prop.toMap);
+    }
+    configMap['globalProperties'] = propertiesList;
     return configMap;
   }
   void setShortLinkCallback(ShortLinkCallback shortLinkCallback){
     this.shortLinkCallback = shortLinkCallback;
   } 
+  void withGlobalProperty(String key, String value, bool overrideExisting){
+    this.globalProperties.add(new SingularGlobalProperty(key, value, overrideExisting));
+
+  }
 }

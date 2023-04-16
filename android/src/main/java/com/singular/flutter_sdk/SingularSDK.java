@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 import android.util.Log;
+import java.util.ArrayList;
 
 
 /** FlutterSdkPlugin */
@@ -215,6 +216,21 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     if (imei != null) {
       singularConfig.withIMEI(imei);
     }
+
+    try{
+      ArrayList<Map>  globalProps =  (ArrayList<Map>)configDict.get("globalProperties");
+      if (globalProps != null){
+        for (Map prop: globalProps){
+          String key = (String)prop.get("key");
+          String value = (String)prop.get("value");
+          boolean overrideExisting = (boolean)prop.get("overrideExisting");
+          singularConfig.withGlobalProperty(key, value, overrideExisting);
+        }
+      }
+    } catch (Exception e){
+    }
+
+
 
     singularLinkHandler = new SingularLinkHandler() {
       @Override
