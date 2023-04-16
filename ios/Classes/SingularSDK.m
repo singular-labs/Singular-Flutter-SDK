@@ -104,11 +104,13 @@ static NSDictionary *configDict;
     config.shortLinkResolveTimeOut = shortLinkResolveTimeOut;
     NSArray *props = configDict[@"globalProperties"];
 
-    for (NSDictionary *prop in props) {
-        NSString *key = [prop objectForKey:@"key"];
-        NSString *value = [prop objectForKey:@"value"];
-        BOOL overrideExisting = [[prop objectForKey:@"overrideExisting"]boolValue];
-        [config setGlobalProperty:key withValue:value overrideExisting:overrideExisting];
+    if (props != nil) {
+        for (NSDictionary *prop in props) {
+            NSString *key = [prop objectForKey:@"key"];
+            NSString *value = [prop objectForKey:@"value"];
+            BOOL overrideExisting = [[prop objectForKey:@"overrideExisting"]boolValue];
+            [config setGlobalProperty:key withValue:value overrideExisting:overrideExisting];
+        }
     }
 
     if (customUserId) {

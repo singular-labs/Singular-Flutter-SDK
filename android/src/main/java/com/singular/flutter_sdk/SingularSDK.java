@@ -217,14 +217,21 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       singularConfig.withIMEI(imei);
     }
 
-    ArrayList<Map>  globalProps =  (ArrayList<Map>)configDict.get("globalProperties");
-
-    for (Map prop: globalProps){
-      String key = (String)prop.get("key");
-      String value = (String)prop.get("value");
-      boolean overrideExisting = (boolean)prop.get("overrideExisting");
-      singularConfig.withGlobalProperty(key, value, overrideExisting);
+    try{
+      ArrayList<Map>  globalProps =  (ArrayList<Map>)configDict.get("globalProperties");
+      if (globalProps != null){
+        for (Map prop: globalProps){
+          String key = (String)prop.get("key");
+          String value = (String)prop.get("value");
+          boolean overrideExisting = (boolean)prop.get("overrideExisting");
+          singularConfig.withGlobalProperty(key, value, overrideExisting);
+        }
+      }
+    } catch (Exception e){
+      e.printStackTrace();
     }
+
+
 
     singularLinkHandler = new SingularLinkHandler() {
       @Override
