@@ -1,24 +1,24 @@
-#import "SingularSDK.h"
 #import <Singular/Singular.h>
 #import <Singular/SingularConfig.h>
 #import <Singular/SingularLinkParams.h>
 #import "SingularAppDelegate.h"
 #import "SingularConstants.h"
+#import "SingularSDK.h"
 
 @implementation SingularSDK
 
 static NSURL *tempOpenUrl;
-static FlutterMethodChannel* channel;
+static FlutterMethodChannel *channel;
 static NSDictionary *configDict;
 
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
++ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
     channel = [FlutterMethodChannel methodChannelWithName:@"singular-api" binaryMessenger:[registrar messenger]];
-    
-    SingularSDK* instance = [[SingularSDK alloc] init];
+
+    SingularSDK *instance = [[SingularSDK alloc] init];
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
-- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+- (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
     if ([START isEqualToString:call.method]) {
         [self start:call withResult:result];
     } else if ([EVENT isEqualToString:call.method]) {
@@ -73,7 +73,7 @@ static NSDictionary *configDict;
         [self skanGetConversionValue:call withResult:result];
     } else if ([CREATE_REFERRER_SHORT_LINK isEqualToString:call.method]) {
         [self createReferrerShortLink:call withResult:result];
-    }else {
+    } else {
         result(FlutterMethodNotImplemented);
     }
 }
@@ -86,47 +86,56 @@ static NSDictionary *configDict;
     if (configDict == nil) {
         return;
     }
-    
+
     NSString *apiKey = configDict[@"apiKey"];
     NSString *secretKey = configDict[@"secretKey"];
     BOOL skAdNetworkEnabled = [configDict[@"skAdNetworkEnabled"] boolValue];
-    BOOL clipboardAttribution = [configDict[@"clipboardAttribution"] boolValue]; 
+    BOOL clipboardAttribution = [configDict[@"clipboardAttribution"] boolValue];
     BOOL manualSkanConversionManagement = [configDict[@"manualSkanConversionManagement"] boolValue];
     int waitForTrackingAuthorizationWithTimeoutInterval = [configDict[@"waitForTrackingAuthorizationWithTimeoutInterval"] intValue];
     float shortLinkResolveTimeOut = [configDict[@"shortLinkResolveTimeOut"] floatValue];
     NSString *customUserId = configDict[@"customUserId"];
 
-    SingularConfig* config = [[SingularConfig alloc] initWithApiKey:apiKey andSecret:secretKey];
+    SingularConfig *config = [[SingularConfig alloc] initWithApiKey:apiKey andSecret:secretKey];
     config.skAdNetworkEnabled = skAdNetworkEnabled;
     config.clipboardAttribution = clipboardAttribution;
     config.manualSkanConversionManagement = manualSkanConversionManagement;
     config.waitForTrackingAuthorizationWithTimeoutInterval = waitForTrackingAuthorizationWithTimeoutInterval;
     config.shortLinkResolveTimeOut = shortLinkResolveTimeOut;
+    NSArray *props = configDict[@"globalProperties"];
+
+    for (NSDictionary *prop in props) {
+        NSString *key = [prop objectForKey:@"key"];
+        NSString *value = [prop objectForKey:@"value"];
+        BOOL overrideExisting = [[prop objectForKey:@"overrideExisting"]boolValue];
+        [config setGlobalProperty:key withValue:value overrideExisting:overrideExisting];
+    }
 
     if (customUserId) {
-       [Singular setCustomUserId:customUserId];
+        [Singular setCustomUserId:customUserId];
     }
-    NSNumber* limitDataSharing = configDict[@"limitDataSharing"];
+
+    NSNumber *limitDataSharing = configDict[@"limitDataSharing"];
 
     if (![limitDataSharing isEqual:[NSNull null]]) {
         [Singular limitDataSharing:[limitDataSharing boolValue]];
     }
 
-    NSNumber* sessionTimeout = configDict[@"sessionTimeout"];
+    NSNumber *sessionTimeout = configDict[@"sessionTimeout"];
 
     if (sessionTimeout >= 0) {
         [Singular setSessionTimeout:[sessionTimeout intValue]];
     }
 
-    config.singularLinksHandler = ^(SingularLinkParams * params) {
-            NSMutableDictionary *linkParams = [[NSMutableDictionary alloc] init];
-            [linkParams setValue:[params getDeepLink] forKey:@"deeplink"];
-            [linkParams setValue:[params getPassthrough] forKey:@"passthrough"];
-            [linkParams setValue:@([params isDeferred]) forKey:@"isDeferred"];
-            
-            [channel invokeMethod:@"singularLinksHandlerName" arguments:linkParams];
+    config.singularLinksHandler = ^(SingularLinkParams *params) {
+        NSMutableDictionary *linkParams = [[NSMutableDictionary alloc] init];
+        [linkParams setValue:[params getDeepLink] forKey:@"deeplink"];
+        [linkParams setValue:[params getPassthrough] forKey:@"passthrough"];
+        [linkParams setValue:@([params isDeferred]) forKey:@"isDeferred"];
+
+        [channel invokeMethod:@"singularLinksHandlerName" arguments:linkParams];
     };
-    
+
     if ([SingularAppDelegate shared].launchOptions != nil) {
         config.launchOptions = [SingularAppDelegate shared].launchOptions;
     } else if ([SingularAppDelegate shared].userActivity != nil) {
@@ -136,9 +145,10 @@ static NSDictionary *configDict;
     } else {
         NSLog(@"everything is null");
     }
-    
+
     config.conversionValueUpdatedCallback = ^(NSInteger conversionValue) {
         NSString *conversionValueUpdatedCallback = configDict[@"conversionValueUpdatedCallback"];
+
         if (conversionValueUpdatedCallback != nil) {
             [channel invokeMethod:@"conversionValueUpdatedCallbackName" arguments:@(conversionValue)];
         }
@@ -146,6 +156,7 @@ static NSDictionary *configDict;
 
     config.conversionValuesUpdatedCallback = ^(NSNumber *conversionValue, NSNumber *coarse, BOOL lock) {
         NSString *conversionValuesUpdatedCallback = configDict[@"conversionValuesUpdatedCallback"];
+
         if (conversionValuesUpdatedCallback != nil) {
             NSMutableDictionary *updatedConversionValues = [[NSMutableDictionary alloc] init];
             [updatedConversionValues setValue:(conversionValue != nil) ? @([conversionValue integerValue]) : @(-1) forKey:@"conversionValue"];
@@ -165,6 +176,7 @@ static NSDictionary *configDict;
 
 - (void)event:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *eventName =  call.arguments[@"eventName"];
+
     [Singular event:eventName];
 }
 
@@ -177,16 +189,19 @@ static NSDictionary *configDict;
 
 - (void)setCustomUserId:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *customUserId = call.arguments[@"customUserId"];
+
     [Singular setCustomUserId:customUserId];
 }
 
 - (void)setDeviceCustomUserId:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *customUserId = call.arguments[@"customUserId"];
+
     [Singular setDeviceCustomUserId:customUserId];
 }
 
 - (void)registerDeviceTokenForUninstall:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *deviceToken = call.arguments[@"deviceToken"];
+
     [Singular registerDeviceTokenForUninstall:[deviceToken dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
@@ -194,6 +209,7 @@ static NSDictionary *configDict;
     NSString *eventName =  call.arguments[@"eventName"];
     NSString *currency =  call.arguments[@"currency"];
     double amount = [call.arguments[@"amount"] doubleValue];
+
     [Singular customRevenue:eventName currency:currency amount:amount];
 }
 
@@ -202,6 +218,7 @@ static NSDictionary *configDict;
     NSString *currency =  call.arguments[@"currency"];
     double amount = [call.arguments[@"amount"] doubleValue];
     NSDictionary *attributes = call.arguments[@"attributes"];
+
     [Singular customRevenue:eventName currency:currency amount:amount withAttributes:attributes];
 }
 
@@ -214,6 +231,7 @@ static NSDictionary *configDict;
     NSString *productCategory = call.arguments[@"productCategory"];
     int productQuantity = [call.arguments[@"productQuantity"] intValue];
     double productPrice = [call.arguments[@"productPrice"] doubleValue];
+
     [Singular customRevenue:eventName currency:currency amount:amount productSKU:productSKU productName:productName productCategory:productCategory productQuantity:productQuantity productPrice:productPrice];
 }
 
@@ -224,26 +242,31 @@ static NSDictionary *configDict;
     NSDictionary *args = call.arguments[@"args"];
 
     [Singular createReferrerShortLink:baseLink
-                        referrerName:referrerName
-                        referrerId:referrerId
-                        passthroughParams:args
-                        completionHandler:^(NSString *data, NSError *error) {
-                            NSMutableDictionary *linkParams = [[NSMutableDictionary alloc] init];
-                            if (data != nil){
-                                [linkParams setValue:data forKey:@"data"];
-                            }
-                            if (error != nil){
-                                [linkParams setValue:error.description forKey:@"error"];
-                            }
-                            
-                            
-                            [channel invokeMethod:@"shortLinkCallbackName" arguments:linkParams];
+                         referrerName:referrerName
+                           referrerId:referrerId
+                    passthroughParams:args
+                    completionHandler:^(NSString *data, NSError *error) {
+        NSMutableDictionary *linkParams = [[NSMutableDictionary alloc] init];
+
+        if (data != nil) {
+            [linkParams setValue:data
+                          forKey:@"data"];
+        }
+
+        if (error != nil) {
+            [linkParams setValue:error.description
+                          forKey:@"error"];
+        }
+
+        [channel invokeMethod:@"shortLinkCallbackName"
+                    arguments:linkParams];
     }];
 }
 
 - (void)setWrapperNameAndVersion:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *wrapperName =  call.arguments[@"name"];
     NSString *version =  call.arguments[@"version"];
+
     [Singular setWrapperName:wrapperName andVersion:version];
 }
 
@@ -251,21 +274,25 @@ static NSDictionary *configDict;
     NSString *key =  call.arguments[@"key"];
     NSString *value =  call.arguments[@"value"];
     BOOL overrideExisting =  [call.arguments[@"overrideExisting"] boolValue];
+
     result(@([Singular setGlobalProperty:key andValue:value overrideExisting:overrideExisting]));
 }
 
 - (void)unsetGlobalProperty:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *key =  call.arguments[@"key"];
+
     [Singular unsetGlobalProperty:key];
 }
 
 - (void)limitDataSharing:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     BOOL shouldLimitDataSharing =  [call.arguments[@"limitDataSharing"] boolValue];
+
     [Singular limitDataSharing:shouldLimitDataSharing];
 }
 
 - (void)skanUpdateConversionValue:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *conversionValue =  call.arguments[@"conversionValue"];
+
     if ([self isFieldValid:conversionValue]) {
         result(@([Singular skanUpdateConversionValue:[conversionValue integerValue]]));
     }
@@ -287,20 +314,21 @@ static NSDictionary *configDict;
     if (field == nil) {
         return NO;
     }
-    
+
     // Check if its an instance of the singleton NSNull.
     if ([field isKindOfClass:[NSNull class]]) {
         return NO;
     }
-    
+
     // If field can be converted to a string, check if it has any content.
     NSString *str = [NSString stringWithFormat:@"%@", field];
+
     if (str != nil) {
         if ([str length] == 0) {
             return NO;
         }
     }
-    
+
     return YES;
 }
 
