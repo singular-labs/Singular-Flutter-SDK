@@ -228,7 +228,6 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
         }
       }
     } catch (Exception e){
-      e.printStackTrace();
     }
 
 
