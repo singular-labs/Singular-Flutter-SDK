@@ -1,3 +1,7 @@
+## 1.0.14
+1. Adding support for globalProperties
+2. iOS - Bug fix
+
 ## 1.0.13
 Fix: iOS - SKAN improvements
 Fix: iOS - deeplinking from warm start up
