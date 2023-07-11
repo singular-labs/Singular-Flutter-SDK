@@ -14,7 +14,7 @@ class SingularConfig {
 
   String _apiKey;
   String _secretKey;
-  bool skAdNetworkEnabled = false;
+  bool skAdNetworkEnabled = true;
   bool clipboardAttribution = false;
   bool manualSkanConversionManagement = false;
   int waitForTrackingAuthorizationWithTimeoutInterval = 0;
@@ -32,10 +32,7 @@ class SingularConfig {
   ShortLinkCallback ? shortLinkCallback;
   List<SingularGlobalProperty> globalProperties = [];
 
-
-
   SingularConfig(this._apiKey, this._secretKey) {
-
     _channel.setMethodCallHandler((MethodCall call) async {
       try {
         switch (call.method) {
@@ -82,6 +79,7 @@ class SingularConfig {
           waitForTrackingAuthorizationWithTimeoutInterval,
       'shortLinkResolveTimeOut': shortLinkResolveTimeOut
     };
+
     if (singularLinksHandler != null) {
       configMap['singularLinksHandler'] = 'singularLinksHandlerName';
     }
@@ -106,13 +104,14 @@ class SingularConfig {
     configMap['collectOAID'] = collectOAID;
     configMap['enableLogging'] = enableLogging;
     List<Map<String, dynamic>> propertiesList = [];
-    for (SingularGlobalProperty prop in this.globalProperties){
+    for (SingularGlobalProperty prop in this.globalProperties) {
       propertiesList.add(prop.toMap);
     }
     configMap['globalProperties'] = propertiesList;
     return configMap;
   }
-  void setShortLinkCallback(ShortLinkCallback shortLinkCallback){
+
+  void setShortLinkCallback(ShortLinkCallback shortLinkCallback) {
     this.shortLinkCallback = shortLinkCallback;
   } 
   void withGlobalProperty(String key, String value, bool overrideExisting){

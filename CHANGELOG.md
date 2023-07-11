@@ -1,3 +1,7 @@
+## 1.0.15
+1. iOS - `skAdNetworkEnabled` is set to `true` by default
+2. Android - Minor bug fix and improvements
+
 ## 1.0.14
 1. Adding support for globalProperties
 2. iOS - Bug fix
