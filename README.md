@@ -25,9 +25,9 @@ A Flutter plugin for Singular SDK.
 
 ### This plugin is built for
 
-- iOS SingularSDK **v12.0.4**
+- iOS SingularSDK **v12.0.7**
 
-- Android SingularSDK **v12.1.1**
+- Android SingularSDK **v12.1.3**
 
 ---
 
@@ -37,7 +37,7 @@ You can add Singular Plugin to your Flutter app by adding following to your `pub
 
 ```yaml
 dependencies:
-  singular_flutter_sdk: ^1.0.14
+  singular_flutter_sdk: ^1.0.15
 ```
 
 Then navigate to your project in the terminal and run:
@@ -219,7 +219,8 @@ override fun onNewIntent(intent: Intent) {
 
 ## <a id="skadnetwork-support">  Adding SKAdNetwork Support
 
-To enable SKAdNetwork tracking for your app, turn on the skAdNetworkEnabled configuration option before initializing Singular:
+Starting with version 1.0.15 of the Singular Flutter SDK, `skAdNetworkEnabled` is enabled by default.
+To manually enable SKAdNetwork tracking for your app, turn on the skAdNetworkEnabled configuration option before initializing Singular:
 
 *Example:*
 ```dart
