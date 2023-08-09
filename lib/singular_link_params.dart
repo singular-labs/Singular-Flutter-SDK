@@ -2,7 +2,7 @@ class SingularLinkParams {
   String? deeplink;
   String? passthrough;
   bool? isDeferred;
-  Map<String, String>? urlParameters;
+  Map<Object?, Object?>? urlParameters;
 
   SingularLinkParams({this.deeplink, this.passthrough, this.isDeferred, this.urlParameters});
 
