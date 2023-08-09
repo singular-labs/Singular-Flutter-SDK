@@ -63,7 +63,7 @@ class MainPageState extends State<Deeplink> {
                 hintText: 'App did not open with a deep link',
                 labelText: widget.deeplinkParams == null
                     ? ""
-                    : widget.deeplinkParams!['isDeferred']),
+                    : widget.deeplinkParams!['isDeferred'].toString()),
           ),
         ),
         Padding(
@@ -74,10 +74,9 @@ class MainPageState extends State<Deeplink> {
           child: TextField(
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'App did not open with a deep link',
                 labelText: widget.deeplinkParams == null
                     ? ""
-                    : widget.deeplinkParams!['urlParameters']),
+                    : widget.deeplinkParams!['urlParameters'].toString()),
           ),
         ),
       ],
