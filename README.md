@@ -116,10 +116,11 @@ The Singular SDK provides a handler mechanism to read the details of the trackin
 *Example:*
 ```dart
 SingularConfig config = new SingularConfig('API_KEY', 'API_SECRET');
-    config.singularLinksHandler = (SingularLinkParams params) {
+config.singularLinksHandler = (SingularLinkParams params) {
     String deeplink = params.deeplink;
     String passthrough = params.passthrough;
     bool isDeferred = params.isDeferred;
+    Map urlParameters = params.urlParameters;
     // Add your code here to handle the deep link
 });
 Singular.init(config);
