@@ -134,6 +134,7 @@ static NSDictionary *configDict;
         [linkParams setValue:[params getDeepLink] forKey:@"deeplink"];
         [linkParams setValue:[params getPassthrough] forKey:@"passthrough"];
         [linkParams setValue:@([params isDeferred]) forKey:@"isDeferred"];
+        [linkParams setValue:([params getUrlParameters] ? [params getUrlParameters] : @{ }) forKey:@"urlParameters"];
 
         [channel invokeMethod:@"singularLinksHandlerName" arguments:linkParams];
     };
