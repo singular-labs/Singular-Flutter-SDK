@@ -37,7 +37,7 @@ You can add Singular Plugin to your Flutter app by adding following to your `pub
 
 ```yaml
 dependencies:
-  singular_flutter_sdk: ^1.0.15
+  singular_flutter_sdk: ^1.1.0
 ```
 
 Then navigate to your project in the terminal and run:
@@ -116,10 +116,11 @@ The Singular SDK provides a handler mechanism to read the details of the trackin
 *Example:*
 ```dart
 SingularConfig config = new SingularConfig('API_KEY', 'API_SECRET');
-    config.singularLinksHandler = (SingularLinkParams params) {
+config.singularLinksHandler = (SingularLinkParams params) {
     String deeplink = params.deeplink;
     String passthrough = params.passthrough;
     bool isDeferred = params.isDeferred;
+    Map urlParameters = params.urlParameters;
     // Add your code here to handle the deep link
 });
 Singular.init(config);

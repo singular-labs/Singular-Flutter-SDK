@@ -1,3 +1,6 @@
+## 1.1.0
+Added support for Getting url parameters from singular link params in deeplink handler
+
 ## 1.0.15
 1. iOS - `skAdNetworkEnabled` is set to `true` by default
 2. Android - Minor bug fix and improvements

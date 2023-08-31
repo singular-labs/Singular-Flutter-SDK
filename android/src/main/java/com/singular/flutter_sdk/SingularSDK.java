@@ -244,11 +244,15 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
         // Whether the link configured as a deferred deep link.
         boolean isDeferred = params.isDeferred();
 
+        // Resolved deep link query parameters as map.
+        Map<String, String> urlParameters = params.getUrlParameters();
+
         // Add deep link handling code here
         final Map<String, Object> linkParams = new HashMap<>();
         linkParams.put("deeplink", deeplink);
         linkParams.put("passthrough", passthrough);
         linkParams.put("isDeferred", isDeferred);
+        linkParams.put("urlParameters", urlParameters);
 
         uiThreadHandler.post(new Runnable() {
           @Override
