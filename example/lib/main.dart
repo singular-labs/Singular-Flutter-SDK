@@ -106,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       deeplinkParams['deeplink'] = params.deeplink;
       deeplinkParams['passthrough'] = params.passthrough;
       deeplinkParams['isDeferred'] = params.isDeferred;
+      deeplinkParams['urlParameters'] = params.urlParameters;
     };
 
     config.withGlobalProperty("key1", "value1", true);

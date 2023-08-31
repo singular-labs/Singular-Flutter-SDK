@@ -63,7 +63,20 @@ class MainPageState extends State<Deeplink> {
                 hintText: 'App did not open with a deep link',
                 labelText: widget.deeplinkParams == null
                     ? ""
-                    : widget.deeplinkParams!['isDeferred']),
+                    : widget.deeplinkParams!['isDeferred'].toString()),
+          ),
+        ),
+        Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: Text('URL parameters', textAlign: TextAlign.left)),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: TextField(
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: widget.deeplinkParams == null
+                    ? ""
+                    : widget.deeplinkParams!['urlParameters'].toString()),
           ),
         ),
       ],
