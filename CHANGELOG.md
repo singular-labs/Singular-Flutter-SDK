@@ -1,3 +1,6 @@
+## 1.1.1
+Update underlying iOS SDK to 12.1.1
+
 ## 1.1.0
 Added support for Getting url parameters from singular link params in deeplink handler
 
