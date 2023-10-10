@@ -31,6 +31,7 @@ class SingularConfig {
   bool enableLogging = false;
   ShortLinkCallback ? shortLinkCallback;
   List<SingularGlobalProperty> globalProperties = [];
+  List <String> espDomains = [];
 
   SingularConfig(this._apiKey, this._secretKey) {
     _channel.setMethodCallHandler((MethodCall call) async {
@@ -108,6 +109,7 @@ class SingularConfig {
       propertiesList.add(prop.toMap);
     }
     configMap['globalProperties'] = propertiesList;
+    configMap['espDomains'] = espDomains;
     return configMap;
   }
 

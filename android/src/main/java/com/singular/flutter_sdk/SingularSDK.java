@@ -217,6 +217,9 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       singularConfig.withIMEI(imei);
     }
 
+    List<String> espDomains = configDict.get("espDomains");
+    singularConfig.withESPDomains(espDomains);
+
     try{
       ArrayList<Map>  globalProps =  (ArrayList<Map>)configDict.get("globalProperties");
       if (globalProps != null){
@@ -229,8 +232,6 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       }
     } catch (Exception e){
     }
-
-
 
     singularLinkHandler = new SingularLinkHandler() {
       @Override
