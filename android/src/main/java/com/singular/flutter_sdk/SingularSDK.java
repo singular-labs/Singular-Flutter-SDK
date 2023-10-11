@@ -25,8 +25,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 import android.util.Log;
+import java.util.List;
 import java.util.ArrayList;
-
 
 /** FlutterSdkPlugin */
 public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHandler {
@@ -217,7 +217,7 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       singularConfig.withIMEI(imei);
     }
 
-    List<String> espDomains = configDict.get("espDomains");
+    List<String> espDomains = (ArrayList<String>) configDict.get("espDomains");
     singularConfig.withESPDomains(espDomains);
 
     try{
