@@ -1,3 +1,6 @@
+## 1.1.2
+Added support for ESP Domains
+
 ## 1.1.1
 Update underlying iOS SDK to 12.1.1
 

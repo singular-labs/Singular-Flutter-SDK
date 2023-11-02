@@ -25,8 +25,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 import android.util.Log;
+import java.util.List;
 import java.util.ArrayList;
-
 
 /** FlutterSdkPlugin */
 public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHandler {
@@ -181,12 +181,12 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       return;
     }
 
-    String apiKey = (String)configDict.get("apiKey");
-    String secretKey = (String)configDict.get("secretKey");
+    String apiKey = (String) configDict.get("apiKey");
+    String secretKey = (String) configDict.get("secretKey");
     boolean collectOAID = (boolean) configDict.get("collectOAID");
     boolean enableLogging = (boolean) configDict.get("enableLogging");
 
-    double shortLinkResolveTimeOut = (double)configDict.get("shortLinkResolveTimeOut");
+    double shortLinkResolveTimeOut = (double) configDict.get("shortLinkResolveTimeOut");
 
     singularConfig = new SingularConfig(apiKey, secretKey);
 
@@ -201,15 +201,15 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     if (enableLogging) {
       singularConfig.withLoggingEnabled();
     }
-    double sessionTimeout = (double)configDict.get("sessionTimeout");
 
+    double sessionTimeout = (double) configDict.get("sessionTimeout");
     if (sessionTimeout >= 0) {
       singularConfig.withSessionTimeoutInSec((long) sessionTimeout);
     }
 
     Object limitDataSharing = configDict.get("limitDataSharing");
     if (limitDataSharing != null) {
-      singularConfig.withLimitDataSharing((boolean)limitDataSharing);
+      singularConfig.withLimitDataSharing((boolean) limitDataSharing);
     }
 
     String imei = (String) configDict.get("imei");
@@ -217,20 +217,24 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       singularConfig.withIMEI(imei);
     }
 
-    try{
-      ArrayList<Map>  globalProps =  (ArrayList<Map>)configDict.get("globalProperties");
+    try {
+      List<String> espDomains = (ArrayList<String>) configDict.get("espDomains");
+      if (espDomains != null && espDomains.size() > 0) {
+        singularConfig.withESPDomains(espDomains);
+      }
+    } catch (Throwable t) { /* intentionally unhandled */ }
+
+    try {
+      ArrayList<Map>  globalProps =  (ArrayList<Map>) configDict.get("globalProperties");
       if (globalProps != null){
         for (Map prop: globalProps){
-          String key = (String)prop.get("key");
-          String value = (String)prop.get("value");
-          boolean overrideExisting = (boolean)prop.get("overrideExisting");
+          String key = (String) prop.get("key");
+          String value = (String) prop.get("value");
+          boolean overrideExisting = (boolean) prop.get("overrideExisting");
           singularConfig.withGlobalProperty(key, value, overrideExisting);
         }
       }
-    } catch (Exception e){
-    }
-
-
+    } catch (Throwable t) { /* intentionally unhandled */ }
 
     singularLinkHandler = new SingularLinkHandler() {
       @Override
@@ -257,7 +261,7 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
         uiThreadHandler.post(new Runnable() {
           @Override
           public void run() {
-            if (channel != null){
+            if (channel != null) {
               channel.invokeMethod("singularLinksHandlerName",linkParams);
             } 
           }
@@ -297,12 +301,12 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
   }
 
   private void event(final MethodCall call, final Result result) {
-    String eventName =  call.argument("eventName");
+    String eventName = call.argument("eventName");
     Singular.event(eventName);
   }
 
   private void eventWithArgs(final MethodCall call, final Result result) {
-    String eventName =  call.argument("eventName");
+    String eventName = call.argument("eventName");
     Map<String, Object> extra = call.argument("args");
     Singular.event(eventName, new JSONObject(extra).toString());
 }
@@ -322,7 +326,7 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     double amount = call.argument("amount");
     Map args = call.argument("attributes");
 
-     Singular.customRevenue(eventName, currency, amount, args);
+    Singular.customRevenue(eventName, currency, amount, args);
   }
 
   private void trackingOptIn(final MethodCall call, final Result result) {
@@ -364,9 +368,9 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
   }
 
   private void setGlobalProperty(final MethodCall call, final Result result) {
-    String key =  call.argument("key");
-    String value =  call.argument("value");
-    boolean overrideExisting =  call.argument("overrideExisting");
+    String key = call.argument("key");
+    String value = call.argument("value");
+    boolean overrideExisting = call.argument("overrideExisting");
     result.success(Singular.setGlobalProperty(key, value, overrideExisting));
   }
 
@@ -375,29 +379,28 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
   }
 
   private void setFCMDeviceToken(final MethodCall call, final Result result) {
-    String fcmToken =  call.argument("fcmToken");
+    String fcmToken = call.argument("fcmToken");
     Singular.setFCMDeviceToken(fcmToken);
   }
 
   private void setGCMDeviceToken(final MethodCall call, final Result result) {
-    String gcmToken =  call.argument("gcmToken");
+    String gcmToken = call.argument("gcmToken");
     Singular.setGCMDeviceToken(gcmToken);
   }
 
   private void setWrapperNameAndVersion(final MethodCall call, final Result result) {
-    String name =  call.argument("name");
-    String version =  call.argument("version");
+    String name = call.argument("name");
+    String version = call.argument("version");
 
     Singular.setWrapperNameAndVersion(name, version);
   }
 
   private void createReferrerShortLink(final MethodCall call, final Result result) {
-    String baseLink =  call.argument("baseLink");
-    String referrerName =  call.argument("referrerName");
-    String referrerId =  call.argument("referrerId");
+    String baseLink = call.argument("baseLink");
+    String referrerName = call.argument("referrerName");
+    String referrerId = call.argument("referrerId");
     Map args = call.argument("args");
     JSONObject params = new JSONObject(args);
-
 
     Singular.createReferrerShortLink(baseLink,
                 referrerName,
@@ -412,7 +415,7 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
                           final Map<String, Object> linkParams = new HashMap<>();
                           linkParams.put("data", link);
                           linkParams.put("error", null);
-                          if (channel != null){
+                          if (channel != null) {
                             channel.invokeMethod("shortLinkCallbackName",linkParams);
                           }
                         }
@@ -434,7 +437,5 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
                       });
                     }
                 });
-
-
   }
 }

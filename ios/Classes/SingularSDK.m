@@ -102,6 +102,8 @@ static NSDictionary *configDict;
     config.manualSkanConversionManagement = manualSkanConversionManagement;
     config.waitForTrackingAuthorizationWithTimeoutInterval = waitForTrackingAuthorizationWithTimeoutInterval;
     config.shortLinkResolveTimeOut = shortLinkResolveTimeOut;
+    config.espDomains = configDict[@"espDomains"];
+
     NSArray *props = configDict[@"globalProperties"];
 
     if (props != nil) {
