@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'singular_flutter_sdk'
-  s.version          = '1.1.1'
+  s.version          = '1.1.2'
   s.summary          = 'Singular flutter plugin project.'
   s.description      = <<-DESC
 Singular's flutter plugin project.

@@ -123,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     };
     
     config.manualSkanConversionManagement = true;
+    config.espDomains = ['bit.ly'];
     Singular.start(config);
   }
 
