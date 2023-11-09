@@ -7,6 +7,19 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import com.singular.sdk.ShortLinkHandler;
+import com.singular.sdk.Singular;
+import com.singular.sdk.SingularConfig;
+import com.singular.sdk.SingularLinkHandler;
+import com.singular.sdk.SingularLinkParams;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -14,19 +27,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.singular.sdk.*;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-import android.util.Log;
-import java.util.List;
-import java.util.ArrayList;
 
 /** FlutterSdkPlugin */
 public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHandler {
@@ -217,6 +217,11 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       singularConfig.withIMEI(imei);
     }
 
+    String facebookAppId = (String) configDict.get("facebookAppId");
+    if (facebookAppId != null) {
+      singularConfig.withFacebookAppId(facebookAppId);
+    }
+
     try {
       List<String> espDomains = (ArrayList<String>) configDict.get("espDomains");
       if (espDomains != null && espDomains.size() > 0) {
@@ -263,7 +268,7 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
           public void run() {
             if (channel != null) {
               channel.invokeMethod("singularLinksHandlerName",linkParams);
-            } 
+            }
           }
         });
       }
@@ -309,7 +314,7 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     String eventName = call.argument("eventName");
     Map<String, Object> extra = call.argument("args");
     Singular.event(eventName, new JSONObject(extra).toString());
-}
+  }
 
   private void customRevenue(final MethodCall call, final Result result) {
     String currency = call.argument("currency");
@@ -403,39 +408,39 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     JSONObject params = new JSONObject(args);
 
     Singular.createReferrerShortLink(baseLink,
-                referrerName,
-                referrerId,
-                params,
-                new ShortLinkHandler() {
-                    @Override
-                    public void onSuccess(final String link) {
-                      uiThreadHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                          final Map<String, Object> linkParams = new HashMap<>();
-                          linkParams.put("data", link);
-                          linkParams.put("error", null);
-                          if (channel != null) {
-                            channel.invokeMethod("shortLinkCallbackName",linkParams);
-                          }
-                        }
-                      });
+            referrerName,
+            referrerId,
+            params,
+            new ShortLinkHandler() {
+              @Override
+              public void onSuccess(final String link) {
+                uiThreadHandler.post(new Runnable() {
+                  @Override
+                  public void run() {
+                    final Map<String, Object> linkParams = new HashMap<>();
+                    linkParams.put("data", link);
+                    linkParams.put("error", null);
+                    if (channel != null) {
+                      channel.invokeMethod("shortLinkCallbackName",linkParams);
                     }
-
-                    @Override
-                    public void onError(final String error) {
-                      uiThreadHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                          final Map<String, Object> linkParams = new HashMap<>();
-                          linkParams.put("data", null);
-                          linkParams.put("error", error);
-                          if (channel != null){
-                            channel.invokeMethod("shortLinkCallbackName",linkParams);
-                          }
-                        }
-                      });
-                    }
+                  }
                 });
+              }
+
+              @Override
+              public void onError(final String error) {
+                uiThreadHandler.post(new Runnable() {
+                  @Override
+                  public void run() {
+                    final Map<String, Object> linkParams = new HashMap<>();
+                    linkParams.put("data", null);
+                    linkParams.put("error", error);
+                    if (channel != null){
+                      channel.invokeMethod("shortLinkCallbackName",linkParams);
+                    }
+                  }
+                });
+              }
+            });
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
-import 'dart:collection';
-import 'package:singular_flutter_sdk/singular_link_params.dart';
 import 'package:singular_flutter_sdk/singular_global_property.dart';
+import 'package:singular_flutter_sdk/singular_link_params.dart';
 
 
 typedef void SingularLinksHandler(SingularLinkParams params);
@@ -24,9 +23,9 @@ class SingularConfig {
   ConversionValuesUpdatedCallback? conversionValuesUpdatedCallback;
   double sessionTimeout = -1;
   String? customUserId;
-  // Limit Data Sharing
   bool? limitDataSharing;
   String? imei;
+  String? facebookAppId;
   bool collectOAID = false;
   bool enableLogging = false;
   ShortLinkCallback ? shortLinkCallback;
@@ -48,7 +47,6 @@ class SingularConfig {
               shortLinkCallback = null;
             }
             break;
-
           case 'conversionValueUpdatedCallbackName':
             if (conversionValueUpdatedCallback != null) {
               conversionValueUpdatedCallback!(call.arguments);
@@ -84,40 +82,54 @@ class SingularConfig {
     if (singularLinksHandler != null) {
       configMap['singularLinksHandler'] = 'singularLinksHandlerName';
     }
+
     if (conversionValueUpdatedCallback != null) {
       configMap['conversionValueUpdatedCallback'] =
           'conversionValueUpdatedCallbackName';
     }
+
     if (conversionValuesUpdatedCallback != null) {
       configMap['conversionValuesUpdatedCallback'] =
       'conversionValuesUpdatedCallbackName';
     }
+
     if (customUserId != null) {
       configMap['customUserId'] = customUserId;
     }
+
     if (limitDataSharing != null) {
       configMap['limitDataSharing'] = limitDataSharing;
     }
+
     if (imei != null) {
       configMap['imei'] = imei;
     }
+
+    if (facebookAppId != null) {
+      configMap['facebookAppId'] = facebookAppId;
+    }
+
     configMap['sessionTimeout'] = sessionTimeout;
     configMap['collectOAID'] = collectOAID;
     configMap['enableLogging'] = enableLogging;
+
+    configMap['espDomains'] = espDomains;
+
     List<Map<String, dynamic>> propertiesList = [];
     for (SingularGlobalProperty prop in this.globalProperties) {
       propertiesList.add(prop.toMap);
     }
     configMap['globalProperties'] = propertiesList;
-    configMap['espDomains'] = espDomains;
+
     return configMap;
   }
 
   void setShortLinkCallback(ShortLinkCallback shortLinkCallback) {
     this.shortLinkCallback = shortLinkCallback;
-  } 
+  }
+
   void withGlobalProperty(String key, String value, bool overrideExisting){
     this.globalProperties.add(new SingularGlobalProperty(key, value, overrideExisting));
-
   }
+
 }
