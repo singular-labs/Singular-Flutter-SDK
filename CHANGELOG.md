@@ -1,3 +1,6 @@
+## 1.2.0
+SDID support
+
 ## 1.1.2
 Added support for ESP Domains
 

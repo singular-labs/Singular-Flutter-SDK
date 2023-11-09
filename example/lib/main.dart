@@ -1,17 +1,12 @@
-import 'dart:async';
-
 import 'package:example/custom_event.dart';
+import 'package:example/deeplink.dart';
 import 'package:example/identity.dart';
 import 'package:example/revenue.dart';
 import 'package:example/skan.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:singular_flutter_sdk/singular.dart';
 import 'package:singular_flutter_sdk/singular_config.dart';
 import 'package:singular_flutter_sdk/singular_link_params.dart';
-
-import 'package:example/deeplink.dart';
 
 void main() {
   runApp(MyApp());
@@ -97,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
     SingularConfig config =
-         SingularConfig('API_KEY', 'API_SECRET');
+    SingularConfig('API_KEY', 'API_SECRET');
     config.waitForTrackingAuthorizationWithTimeoutInterval = 60;
     config.skAdNetworkEnabled = true;
     config.clipboardAttribution = true;
@@ -111,19 +106,20 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
     config.withGlobalProperty("key1", "value1", true);
     config.withGlobalProperty("key2", "value2", true);
-    
+
     config.conversionValueUpdatedCallback = (int conversionValue) {
       print('Received conversionValueUpdatedCallback: ' +
           conversionValue.toString());
     };
-    
+
     config.conversionValuesUpdatedCallback = (int conversionValue, int coarse, bool lock) {
       print('Received conversionValuesUpdatedCallback: ' +
           conversionValue.toString() + ' coarse: ' + coarse.toString() + ' lock: ' +  (lock ? 'true' : 'false'));
     };
-    
+
     config.manualSkanConversionManagement = true;
     config.espDomains = ['bit.ly'];
+    config.facebookAppId = "FACEBOOK_APP_ID";
     Singular.start(config);
   }
 
