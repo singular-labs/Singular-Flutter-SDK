@@ -39,7 +39,6 @@ void main() {
         case "getGlobalProperties":
         case "setWrapperNameAndVersion":
         case "setFCMDeviceToken":
-        case "setGCMDeviceToken":
           selectedMethod = method;
           break;
       }
@@ -133,10 +132,5 @@ void main() {
   test('check setFCMDeviceToken call', () async {
     Singular.setFCMDeviceToken("12345");
     expect(selectedMethod, 'setFCMDeviceToken');
-  });
-
-  test('check setGCMDeviceToken call', () async {
-    Singular.setGCMDeviceToken("12345");
-    expect(selectedMethod, 'setGCMDeviceToken');
   });
 }

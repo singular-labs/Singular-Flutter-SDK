@@ -1,7 +1,7 @@
-## 1.2.0
-SDID support
+## 1.2.1
+Bug fix
 
-## 1.1.2
+## 1.2.0
 Added support for ESP Domains
 
 ## 1.1.1

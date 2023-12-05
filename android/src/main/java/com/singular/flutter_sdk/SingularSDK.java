@@ -151,11 +151,8 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       case SingularConstants.SET_FCM_TOKEN:
         setFCMDeviceToken(call, result);
         break;
-      case SingularConstants.SET_GCM_TOKEN:
-        setGCMDeviceToken(call, result);
-        break;
       case SingularConstants.REGISTER_DEVICE_TOKEN_FOR_UNINSTALL:
-        setFCMDeviceToken(call, result);
+        registerDeviceTokenForUninstall(call, result);
         break;
 
       case SingularConstants.CREATE_REFERRER_SHORT_LINK:
@@ -201,6 +198,14 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     if (enableLogging) {
       singularConfig.withLoggingEnabled();
     }
+
+    try {
+      int logLevel = (int) configDict.get("logLevel");
+
+      if (logLevel >= 0) {
+        singularConfig.withLogLevel(logLevel);
+      }
+    } catch (Throwable t) { }
 
     double sessionTimeout = (double) configDict.get("sessionTimeout");
     if (sessionTimeout >= 0) {
@@ -388,9 +393,9 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     Singular.setFCMDeviceToken(fcmToken);
   }
 
-  private void setGCMDeviceToken(final MethodCall call, final Result result) {
-    String gcmToken = call.argument("gcmToken");
-    Singular.setGCMDeviceToken(gcmToken);
+  private void registerDeviceTokenForUninstall(final MethodCall call, final Result result) {
+    String fcmToken = call.argument("deviceToken");
+    Singular.setFCMDeviceToken(fcmToken);
   }
 
   private void setWrapperNameAndVersion(final MethodCall call, final Result result) {
