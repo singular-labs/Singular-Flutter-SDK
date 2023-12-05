@@ -1,3 +1,6 @@
+## 1.2.1
+Bug fix
+
 ## 1.2.0
 SDID support
 

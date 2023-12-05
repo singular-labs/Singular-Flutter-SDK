@@ -7,7 +7,7 @@ import 'package:singular_flutter_sdk/singular_iap.dart';
 
 const ADMON_REVENUE_EVENT_NAME = '__ADMON_USER_LEVEL_REVENUE__';
 const _SDK_NAME = 'Flutter';
-const _SDK_VERSION = '1.2.0';
+const _SDK_VERSION = '1.2.1';
 
 typedef void ShortLinkCallback(String? data, String? error);
 
@@ -50,10 +50,6 @@ class Singular {
 
   static void setFCMDeviceToken(String fcmToken) {
     _channel.invokeMethod('setFCMDeviceToken', {'fcmToken': fcmToken});
-  }
-
-  static void setGCMDeviceToken(String gcmToken) {
-    _channel.invokeMethod('setGCMDeviceToken', {'gcmToken': gcmToken});
   }
 
 // REVENUE
