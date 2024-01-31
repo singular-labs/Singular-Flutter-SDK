@@ -1,3 +1,8 @@
+## 1.3.0
+1. Improve support for SDID.
+2. Support for attribution callback.
+3. Fix uninstall token.
+
 ## 1.2.1
 Bug fix
 
