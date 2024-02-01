@@ -10,9 +10,9 @@ import androidx.annotation.NonNull;
 import com.singular.sdk.ShortLinkHandler;
 import com.singular.sdk.Singular;
 import com.singular.sdk.SingularConfig;
+import com.singular.sdk.SingularDeviceAttributionHandler;
 import com.singular.sdk.SingularLinkHandler;
 import com.singular.sdk.SingularLinkParams;
-import com.singular.sdk.SingularDeviceAttributionHandler;
 
 import org.json.JSONObject;
 
@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
