@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import com.singular.sdk.ShortLinkHandler;
 import com.singular.sdk.Singular;
 import com.singular.sdk.SingularConfig;
+import com.singular.sdk.SingularDeviceAttributionHandler;
 import com.singular.sdk.SingularLinkHandler;
 import com.singular.sdk.SingularLinkParams;
 
@@ -154,7 +155,6 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       case SingularConstants.REGISTER_DEVICE_TOKEN_FOR_UNINSTALL:
         registerDeviceTokenForUninstall(call, result);
         break;
-
       case SingularConstants.CREATE_REFERRER_SHORT_LINK:
         createReferrerShortLink(call, result);
         break;
@@ -281,12 +281,57 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
 
     if (mIntent != null) {
       int intentHash = mIntent.hashCode();
-
       if (intentHash != currentIntentHash) {
         currentIntentHash = intentHash;
         singularConfig.withSingularLink(mIntent, singularLinkHandler,(long) shortLinkResolveTimeOut);
       }
     }
+    singularConfig.withSingularDeviceAttribution(new SingularDeviceAttributionHandler() {
+      @Override
+      public void onDeviceAttributionInfoReceived(Map<String, Object> deviceAttributionData) {
+        JSONObject deviceAttribution = new JSONObject(deviceAttributionData);
+
+        uiThreadHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            if (channel != null) {
+              channel.invokeMethod("deviceAttributionCallbackName",deviceAttribution.toString());
+            }
+          }
+        });
+      }
+    });
+
+    try {
+      String customSdid = (String) configDict.get("customSdid");
+      if (customSdid != null) {
+        singularConfig.withSDID(customSdid, new SingularConfig.SdidAccessorHandler() {
+          @Override
+          public void didSetSdid(String result) {
+            uiThreadHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                if (channel != null) {
+                  channel.invokeMethod("didSetSdidCallbackName", result);
+                }
+              }
+            });
+          }
+
+          @Override
+          public void sdidReceived(String result) {
+            uiThreadHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                if (channel != null) {
+                  channel.invokeMethod("sdidReceivedCallbackName", result);
+                }
+              }
+            });
+          }
+        });
+      }
+    } catch (Throwable throwable) { /* unhandled */}
 
     Singular.init(mContext, singularConfig);
   }
