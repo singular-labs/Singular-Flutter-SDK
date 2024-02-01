@@ -151,13 +151,6 @@ static NSDictionary *configDict;
         NSLog(@"everything is null");
     }
 
-    config.deviceAttributionCallback = ^(NSDictionary *attributionInfo) {
-        NSString *attributionData = [self dictionaryToJson:attributionInfo];
-        if (attributionData != nil) {
-            [channel invokeMethod:@"deviceAttributionCallbackName" arguments:attributionData];
-        }
-    };
-
     config.conversionValueUpdatedCallback = ^(NSInteger conversionValue) {
         NSString *conversionValueUpdatedCallback = configDict[@"conversionValueUpdatedCallback"];
 
@@ -178,31 +171,7 @@ static NSDictionary *configDict;
             [channel invokeMethod:@"conversionValuesUpdatedCallbackName" arguments:updatedConversionValues];
         }
     };
-    
-    NSString *customSdid = configDict[@"customSdid"];
-    if (customSdid && customSdid.length > 0) {
-        config.customSdid = customSdid;
-        config.sdidReceivedHandler = ^(NSString *result) {
-            [channel invokeMethod:@"sdidReceivedCallbackName" arguments:result];
-        };
-        
-        config.didSetSdidHandler = ^(NSString *result) {
-            [channel invokeMethod:@"didSetSdidCallbackName" arguments:result];
-        };
-    }
-    
     [Singular start:config];
-}
-
-+ (NSString *)dictionaryToJson:(NSDictionary *)data {
-    NSError *error;
-    NSData *JSON = [NSJSONSerialization dataWithJSONObject:data options:0 error:&error];
-    if (error) {
-        return nil;
-    }
-    
-    NSString *JSONString = [[NSString alloc] initWithData:JSON encoding:NSUTF8StringEncoding];
-    return JSONString;
 }
 
 - (void)start:(FlutterMethodCall *)call withResult:(FlutterResult)result {
@@ -237,10 +206,8 @@ static NSDictionary *configDict;
 
 - (void)registerDeviceTokenForUninstall:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *deviceToken = call.arguments[@"deviceToken"];
-    NSData *tokenData = [self convertHexStringToDataBytes:deviceToken];
-    if (tokenData) {
-        [Singular registerDeviceTokenForUninstall:tokenData];
-    }
+
+    [Singular registerDeviceTokenForUninstall:[deviceToken dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
 - (void)customRevenue:(FlutterMethodCall *)call withResult:(FlutterResult)result {
@@ -368,28 +335,6 @@ static NSDictionary *configDict;
     }
 
     return YES;
-}
-
-- (NSData *)convertHexStringToDataBytes:(NSString *)hexString {
-    if([hexString length] % 2 != 0) {
-        return nil;
-    }
-
-    const char *chars = [hexString UTF8String];
-    int index = 0, length = (int)[hexString length];
-
-    NSMutableData *data = [NSMutableData dataWithCapacity:length / 2];
-    char byteChars[3] = {'\0','\0','\0'};
-    unsigned long wholeByte;
-
-    while (index < length) {
-        byteChars[0] = chars[index++];
-        byteChars[1] = chars[index++];
-        wholeByte = strtoul(byteChars, NULL, 16);
-        [data appendBytes:&wholeByte length:1];
-    }
-    
-    return data;
 }
 
 @end
