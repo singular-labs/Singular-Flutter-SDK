@@ -120,6 +120,20 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     config.manualSkanConversionManagement = true;
     config.espDomains = ['bit.ly'];
     config.facebookAppId = "FACEBOOK_APP_ID";
+    config.deviceAttributionCallback = (Map<String, dynamic> deviceAttributionInfo) {
+      print('Received device attribution information: ' + deviceAttributionInfo.toString());
+    };
+    
+
+    config.customSdid = "custom-sdid-set-by-developer-123-abc";
+    config.didSetSdidCallback = (String sdid) {
+      print("did set sdid = " + sdid);
+    };
+
+    config.sdidReceivedCallback = (String sdid) {
+      print("received sdid = " + sdid);
+    };
+
     Singular.start(config);
   }
 

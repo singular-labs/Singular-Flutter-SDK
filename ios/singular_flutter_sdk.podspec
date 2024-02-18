@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'singular_flutter_sdk'
-  s.version          = '1.2.1'
+  s.version          = '1.3.1'
   s.summary          = 'Singular flutter plugin project.'
   s.description      = <<-DESC
 Singular's flutter plugin project.
@@ -13,7 +13,7 @@ Singular's flutter plugin project.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.platform = :ios, '9.0'
-  s.ios.dependency 'Singular-SDK', '12.2.0'
+  s.ios.dependency 'Singular-SDK', '12.3.1'
   s.static_framework = true
 
   # Flutter.framework does not contain a i386 slice.
