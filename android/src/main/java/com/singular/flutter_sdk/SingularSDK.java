@@ -7,11 +7,13 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import com.singular.sdk.SDIDAccessorHandler;
 import com.singular.sdk.ShortLinkHandler;
 import com.singular.sdk.Singular;
 import com.singular.sdk.SingularConfig;
 import com.singular.sdk.SingularLinkHandler;
 import com.singular.sdk.SingularLinkParams;
+import com.singular.sdk.SingularDeviceAttributionHandler;
 
 import org.json.JSONObject;
 
@@ -20,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -154,7 +157,6 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       case SingularConstants.REGISTER_DEVICE_TOKEN_FOR_UNINSTALL:
         registerDeviceTokenForUninstall(call, result);
         break;
-
       case SingularConstants.CREATE_REFERRER_SHORT_LINK:
         createReferrerShortLink(call, result);
         break;
@@ -281,12 +283,55 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
 
     if (mIntent != null) {
       int intentHash = mIntent.hashCode();
-
       if (intentHash != currentIntentHash) {
         currentIntentHash = intentHash;
         singularConfig.withSingularLink(mIntent, singularLinkHandler,(long) shortLinkResolveTimeOut);
       }
     }
+    singularConfig.withSingularDeviceAttribution(new SingularDeviceAttributionHandler() {
+      @Override
+      public void onDeviceAttributionInfoReceived(Map<String, Object> deviceAttributionData) {
+        JSONObject deviceAttribution = new JSONObject(deviceAttributionData);
+
+        uiThreadHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            if (channel != null) {
+              channel.invokeMethod("deviceAttributionCallbackName",deviceAttribution.toString());
+            }
+          }
+        });
+      }
+    });
+
+    try {
+      String customSdid = (String) configDict.get("customSdid");
+        singularConfig.withCustomSdid(customSdid, new SDIDAccessorHandler() {
+          @Override
+          public void didSetSdid(String result) {
+            uiThreadHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                if (channel != null) {
+                  channel.invokeMethod("didSetSdidCallbackName", result);
+                }
+              }
+            });
+          }
+
+          @Override
+          public void sdidReceived(String result) {
+            uiThreadHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                if (channel != null) {
+                  channel.invokeMethod("sdidReceivedCallbackName", result);
+                }
+              }
+            });
+          }
+        });
+    } catch (Throwable throwable) { /* unhandled */}
 
     Singular.init(mContext, singularConfig);
   }
