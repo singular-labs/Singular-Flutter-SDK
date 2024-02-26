@@ -1,3 +1,6 @@
+## 1.3.2
+Bug fix.
+
 ## 1.3.1
 1. Improve support for SDID.
 2. Support for attribution callback.
