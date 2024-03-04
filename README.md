@@ -27,7 +27,7 @@ A Flutter plugin for Singular SDK.
 
 - iOS SingularSDK **v12.3.2**
 
-- Android SingularSDK **v12.5.3**
+- Android SingularSDK **v12.5.4**
 
 ---
 
@@ -37,7 +37,7 @@ You can add Singular Plugin to your Flutter app by adding following to your `pub
 
 ```yaml
 dependencies:
-  singular_flutter_sdk: ^1.3.2
+  singular_flutter_sdk: ^1.3.3
 ```
 
 Then navigate to your project in the terminal and run:
