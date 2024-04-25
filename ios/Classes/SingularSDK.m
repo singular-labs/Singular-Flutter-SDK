@@ -132,13 +132,15 @@ static NSDictionary *configDict;
     }
 
     config.singularLinksHandler = ^(SingularLinkParams *params) {
-        NSMutableDictionary *linkParams = [[NSMutableDictionary alloc] init];
-        [linkParams setValue:[params getDeepLink] forKey:@"deeplink"];
-        [linkParams setValue:[params getPassthrough] forKey:@"passthrough"];
-        [linkParams setValue:@([params isDeferred]) forKey:@"isDeferred"];
-        [linkParams setValue:([params getUrlParameters] ? [params getUrlParameters] : @{ }) forKey:@"urlParameters"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSMutableDictionary *linkParams = [[NSMutableDictionary alloc] init];
+            [linkParams setValue:[params getDeepLink] forKey:@"deeplink"];
+            [linkParams setValue:[params getPassthrough] forKey:@"passthrough"];
+            [linkParams setValue:@([params isDeferred]) forKey:@"isDeferred"];
+            [linkParams setValue:([params getUrlParameters] ? [params getUrlParameters] : @{ }) forKey:@"urlParameters"];
 
-        [channel invokeMethod:@"singularLinksHandlerName" arguments:linkParams];
+            [channel invokeMethod:@"singularLinksHandlerName" arguments:linkParams];
+        });
     };
 
     if ([SingularAppDelegate shared].launchOptions != nil) {
@@ -154,7 +156,9 @@ static NSDictionary *configDict;
     config.deviceAttributionCallback = ^(NSDictionary *attributionInfo) {
         NSString *attributionData = [self dictionaryToJson:attributionInfo];
         if (attributionData != nil) {
-            [channel invokeMethod:@"deviceAttributionCallbackName" arguments:attributionData];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [channel invokeMethod:@"deviceAttributionCallbackName" arguments:attributionData];
+            });
         }
     };
 
@@ -162,7 +166,9 @@ static NSDictionary *configDict;
         NSString *conversionValueUpdatedCallback = configDict[@"conversionValueUpdatedCallback"];
 
         if (conversionValueUpdatedCallback != nil) {
-            [channel invokeMethod:@"conversionValueUpdatedCallbackName" arguments:@(conversionValue)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [channel invokeMethod:@"conversionValueUpdatedCallbackName" arguments:@(conversionValue)];
+            });
         }
     };
 
@@ -170,23 +176,29 @@ static NSDictionary *configDict;
         NSString *conversionValuesUpdatedCallback = configDict[@"conversionValuesUpdatedCallback"];
 
         if (conversionValuesUpdatedCallback != nil) {
-            NSMutableDictionary *updatedConversionValues = [[NSMutableDictionary alloc] init];
-            [updatedConversionValues setValue:(conversionValue != nil) ? @([conversionValue integerValue]) : @(-1) forKey:@"conversionValue"];
-            [updatedConversionValues setValue:(coarse != nil) ? @([coarse integerValue]) : @(-1) forKey:@"coarse"];
-            [updatedConversionValues setValue:@(lock) forKey:@"lock"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSMutableDictionary *updatedConversionValues = [[NSMutableDictionary alloc] init];
+                [updatedConversionValues setValue:(conversionValue != nil) ? @([conversionValue integerValue]) : @(-1) forKey:@"conversionValue"];
+                [updatedConversionValues setValue:(coarse != nil) ? @([coarse integerValue]) : @(-1) forKey:@"coarse"];
+                [updatedConversionValues setValue:@(lock) forKey:@"lock"];
 
-            [channel invokeMethod:@"conversionValuesUpdatedCallbackName" arguments:updatedConversionValues];
+                [channel invokeMethod:@"conversionValuesUpdatedCallbackName" arguments:updatedConversionValues];
+            });
         }
     };
     
     NSString *customSdid = configDict[@"customSdid"];
     config.customSdid = customSdid;
     config.sdidReceivedHandler = ^(NSString *result) {
-        [channel invokeMethod:@"sdidReceivedCallbackName" arguments:result];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [channel invokeMethod:@"sdidReceivedCallbackName" arguments:result];
+        });
     };
 
     config.didSetSdidHandler = ^(NSString *result) {
-        [channel invokeMethod:@"didSetSdidCallbackName" arguments:result];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [channel invokeMethod:@"didSetSdidCallbackName" arguments:result];
+        });
     };
 
     [Singular start:config];
@@ -294,8 +306,10 @@ static NSDictionary *configDict;
                           forKey:@"error"];
         }
 
-        [channel invokeMethod:@"shortLinkCallbackName"
-                    arguments:linkParams];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [channel invokeMethod:@"shortLinkCallbackName"
+                        arguments:linkParams];
+        });
     }];
 }
 
