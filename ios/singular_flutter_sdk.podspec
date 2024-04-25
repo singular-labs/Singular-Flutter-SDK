@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'singular_flutter_sdk'
-  s.version          = '1.3.3'
+  s.version          = '1.4.0'
   s.summary          = 'Singular flutter plugin project.'
   s.description      = <<-DESC
 Singular's flutter plugin project.
@@ -12,9 +12,8 @@ Singular's flutter plugin project.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.platform = :ios, '9.0'
-  s.ios.dependency 'Singular-SDK', '12.3.2'
-  s.static_framework = true
+  s.platform = :ios, '12.0'
+  s.ios.dependency 'Singular-SDK', '12.4.2'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
