@@ -172,12 +172,13 @@ override func application(_ application: UIApplication, didFinishLaunchingWithOp
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
 }
     
-override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-    if let singularAppDelegate = SingularAppDelegate.shared() {
-        singularAppDelegate.continueUserActivity(userActivity, restorationHandler: nil)
+override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+        if let singularAppDelegate = SingularAppDelegate.shared() {
+            singularAppDelegate.continueUserActivity(userActivity, restorationHandler:nil)
+        }
+        return super.application(application, continue:userActivity,
+                                 restorationHandler: restorationHandler);
     }
-   return true
-}
     
 override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
     if let singularAppDelegate = SingularAppDelegate.shared() {
