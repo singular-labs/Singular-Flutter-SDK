@@ -8,12 +8,11 @@ void main() {
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late SingularConfig config;
-
   String selectedMethod = "";
 
   setUp(() {
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel,((MethodCall methodCall) async {
       String method = methodCall.method;
       switch (method) {
         case "start":
@@ -42,11 +41,13 @@ void main() {
           selectedMethod = method;
           break;
       }
-    });
+      return null;
+    }));
   });
 
   tearDown(() {
-    channel.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, null);
   });
 
   test('check start call', () async {

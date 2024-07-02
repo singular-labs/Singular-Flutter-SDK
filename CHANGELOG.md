@@ -1,3 +1,7 @@
+## 1.4.1
+- Support for AGP 8 and above 
+- Updates underlying native iOS SDK to 12.4.4 and Android to 12.5.6
+
 ## 1.4.0
 - Adds support for iOS Privacy Manifest (xcprivacy file).
 - Updates underlying native iOS SDK to 12.4.2, and Android to 12.5.5

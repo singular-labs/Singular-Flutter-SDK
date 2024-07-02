@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 import 'package:singular_flutter_sdk/singular_ad_data.dart';
@@ -7,7 +8,7 @@ import 'package:singular_flutter_sdk/singular_iap.dart';
 
 const ADMON_REVENUE_EVENT_NAME = '__ADMON_USER_LEVEL_REVENUE__';
 const _SDK_NAME = 'Flutter';
-const _SDK_VERSION = '1.4.0';
+const _SDK_VERSION = '1.4.1';
 
 typedef void ShortLinkCallback(String? data, String? error);
 
@@ -157,24 +158,36 @@ class Singular {
   /* SKAN Methods */
 
   static void skanRegisterAppForAdNetworkAttribution() {
-    _channel.invokeMethod('skanRegisterAppForAdNetworkAttribution');
+    if (Platform.isIOS) {
+      _channel.invokeMethod('skanRegisterAppForAdNetworkAttribution');
+    }
   }
 
   static Future<bool> skanUpdateConversionValue(int conversionValue) async {
-    final bool isConversionValueUpdated = await _channel.invokeMethod(
-        'skanUpdateConversionValue', {'conversionValue': conversionValue});
-    return isConversionValueUpdated;
+    if (Platform.isIOS) {
+      final bool isConversionValueUpdated = await _channel.invokeMethod(
+          'skanUpdateConversionValue', {'conversionValue': conversionValue});
+      return isConversionValueUpdated;
+    }
+
+    return false;
   }
 
   static void skanUpdateConversionValues(int conversionValue, int coarse, bool lock) {
-    _channel.invokeMethod(
-        'skanUpdateConversionValues', {'conversionValue': conversionValue, 'coarse': coarse, 'lock': lock});
+    if (Platform.isIOS) {
+      _channel.invokeMethod(
+          'skanUpdateConversionValues', {'conversionValue': conversionValue, 'coarse': coarse, 'lock': lock});
+    }
   }
 
   static Future<num> skanGetConversionValue() async {
-    final num conversionValue =
-        await _channel.invokeMethod('skanUpdateConversionValue');
-    return conversionValue;
+    if (Platform.isIOS) {
+      final num conversionValue =
+      await _channel.invokeMethod('skanUpdateConversionValue');
+      return conversionValue;
+    }
+
+    return -1;
   }
 
   /* IAP Methods */

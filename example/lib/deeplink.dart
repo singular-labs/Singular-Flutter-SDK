@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Deeplink extends StatefulWidget {
-  Map<String, dynamic>? deeplinkParams;
+  final Map<String, dynamic>? deeplinkParams;
   Deeplink(this.deeplinkParams);
 
   @override
