@@ -6,10 +6,6 @@ buildscript {
         google()
         jcenter()
     }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
-    }
 }
 
 rootProject.allprojects {
@@ -28,8 +24,10 @@ android {
     defaultConfig {
         minSdkVersion 16
     }
+
+    namespace 'com.singular.flutter_sdk'
 }
 
 dependencies {
-    implementation 'com.singular.sdk:singular_sdk:12.5.5'
+    implementation 'com.singular.sdk:singular_sdk:12.5.6'
 }
