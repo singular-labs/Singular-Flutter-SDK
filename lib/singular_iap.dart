@@ -1,5 +1,5 @@
 class SingularIAP {
-  String? _revenue;
+  double _revenue;
   String? _currencyCode;
 
   SingularIAP(this._revenue, this._currencyCode);
@@ -9,9 +9,8 @@ class SingularIAP {
     if (_currencyCode != null) {
       eventInformation['pcc'] = _currencyCode;
     }
-    if (_revenue != null) {
-      eventInformation['r'] = _revenue;
-    }
+    
+    eventInformation['r'] = _revenue;
     eventInformation["is_revenue_event"] = true;
 
     return eventInformation;
@@ -23,7 +22,7 @@ class SingularIOSIAP extends SingularIAP {
   String? _transactionId;
   String? _receipt;
 
-  SingularIOSIAP(String? revenue, String? currencyCode, this._productId,
+  SingularIOSIAP(double revenue, String? currencyCode, this._productId,
       this._transactionId, this._receipt)
       : super(revenue, currencyCode);
 
@@ -48,7 +47,7 @@ class SingularAndroidIAP extends SingularIAP {
   String? _receipt;
 
   SingularAndroidIAP(
-      String? revenue, String? currencyCode, this._signature, this._receipt)
+      double revenue, String? currencyCode, this._signature, this._receipt)
       : super(revenue, currencyCode);
 
   Map<String, dynamic> get toMap {
