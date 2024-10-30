@@ -1,3 +1,6 @@
+## 1.5.0
+- Updates underlying native iOS SDK to 12.6.0 and Android to 12.6.0
+
 ## 1.4.1
 - Support for AGP 8 and above 
 - Updates underlying native iOS SDK to 12.4.4 and Android to 12.5.6

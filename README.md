@@ -25,9 +25,9 @@ A Flutter plugin for Singular SDK.
 
 ### This plugin is built for
 
-- iOS SingularSDK **v12.4.4**
+- iOS SingularSDK **v12.6.0**
 
-- Android SingularSDK **v12.5.6**
+- Android SingularSDK **v12.6.0**
 
 ---
 
@@ -37,7 +37,7 @@ You can add Singular Plugin to your Flutter app by adding following to your `pub
 
 ```yaml
 dependencies:
-  singular_flutter_sdk: ^1.4.1
+  singular_flutter_sdk: ^1.5.0
 ```
 
 Then navigate to your project in the terminal and run:
@@ -172,13 +172,12 @@ override func application(_ application: UIApplication, didFinishLaunchingWithOp
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
 }
     
-override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        if let singularAppDelegate = SingularAppDelegate.shared() {
-            singularAppDelegate.continueUserActivity(userActivity, restorationHandler:nil)
-        }
-        return super.application(application, continue:userActivity,
-                                 restorationHandler: restorationHandler);
+override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+    if let singularAppDelegate = SingularAppDelegate.shared() {
+        singularAppDelegate.continueUserActivity(userActivity, restorationHandler: nil)
     }
+   return true
+}
     
 override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
     if let singularAppDelegate = SingularAppDelegate.shared() {
