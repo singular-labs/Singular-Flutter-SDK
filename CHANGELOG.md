@@ -1,5 +1,5 @@
 ## 1.5.1
-- Bug fix
+- podspec changed to static framework
 
 ## 1.5.0
 - Updates underlying native iOS SDK to 12.6.0 and Android to 12.6.0
