@@ -1,3 +1,8 @@
+## 1.6.0
+- Push notifications support
+- Limited identifiers support
+- Updates underlying native iOS SDK to 12.7.1 and Android to 12.7.0
+
 ## 1.5.1
 - podspec changed to static framework
 
