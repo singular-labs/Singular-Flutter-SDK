@@ -37,11 +37,15 @@ class SingularConfig {
   List<SingularGlobalProperty> globalProperties = [];
   List <String> espDomains = [];
   int logLevel = -1;
+  bool limitedIdentifiersEnabled = false;
 
   // sdid
   String? customSdid;
   SdidAccessorCallback? didSetSdidCallback;
   SdidAccessorCallback? sdidReceivedCallback;
+
+  // push notifications
+  List<List<String>> pushNotificationsLinkPaths = [[]];
 
   SingularConfig(this._apiKey, this._secretKey) {
     _channel.setMethodCallHandler((MethodCall call) async {
@@ -166,6 +170,8 @@ class SingularConfig {
       propertiesList.add(prop.toMap);
     }
     configMap['globalProperties'] = propertiesList;
+    configMap['pushNotificationsLinkPaths'] = pushNotificationsLinkPaths;
+    configMap['limitedIdentifiersEnabled'] = limitedIdentifiersEnabled;
 
     return configMap;
   }
@@ -174,8 +180,7 @@ class SingularConfig {
     this.shortLinkCallback = shortLinkCallback;
   }
 
-  void withGlobalProperty(String key, String value, bool overrideExisting){
+  void withGlobalProperty(String key, String value, bool overrideExisting) {
     this.globalProperties.add(new SingularGlobalProperty(key, value, overrideExisting));
   }
-
 }

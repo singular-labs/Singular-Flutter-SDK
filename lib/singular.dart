@@ -8,7 +8,7 @@ import 'package:singular_flutter_sdk/singular_iap.dart';
 
 const ADMON_REVENUE_EVENT_NAME = '__ADMON_USER_LEVEL_REVENUE__';
 const _SDK_NAME = 'Flutter';
-const _SDK_VERSION = '1.5.1';
+const _SDK_VERSION = '1.6.0';
 
 typedef void ShortLinkCallback(String? data, String? error);
 
@@ -230,4 +230,14 @@ class Singular {
 
     singularConfig?.setShortLinkCallback(shortLinkCallback);
   }
+
+  static void handlePushNotification(Map pushNotificationPayload) {
+    if (Platform.isIOS) {
+      _channel.invokeMethod('handlePushNotification',
+          {
+            'pushNotificationPayload': pushNotificationPayload
+          });
+    }
+  }
+
 }
