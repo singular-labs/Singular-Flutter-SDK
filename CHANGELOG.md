@@ -1,3 +1,6 @@
+## 1.6.1
+- fix for Android push notification support
+
 ## 1.6.0
 - Push notifications support
 - Limited identifiers support
