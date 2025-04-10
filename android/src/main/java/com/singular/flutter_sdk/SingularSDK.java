@@ -60,8 +60,9 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     // We save the intent hash code to make sure that the intent we get is a new one to avoid resolving an old push/deeplink.
     currentIntentHash = intent.hashCode();
 
-    if (pushNotificationsLinkPaths != null && pushNotificationsLinkPaths.length > 0) {
-      singularConfig.withPushNotificationPayload(intent, pushNotificationsLinkPaths);
+    if (intent.getExtras() != null && intent.getExtras().size() > 0
+            && pushNotificationsLinkPaths != null && pushNotificationsLinkPaths.length > 0) {
+        singularConfig.withPushNotificationPayload(intent, pushNotificationsLinkPaths);
     }
 
     if (singularLinkHandler != null && intent.getData() != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
@@ -300,23 +301,21 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       }
     };
 
+    List<List<String>> pushPath = (List<List<String>>) configDict.get("pushNotificationsLinkPaths");
+    pushNotificationsLinkPaths = convertTo2DArray(pushPath);
+
     if (mIntent != null) {
       int intentHash = mIntent.hashCode();
       if (intentHash != currentIntentHash) {
         currentIntentHash = intentHash;
 
-        // only if intent has extras, prcoess the push
-        if (mIntent.getExtras() != null && mIntent.getExtras().size() > 0) {
-          List<List<String>> pushPath = (List<List<String>>) configDict.get("pushNotificationsLinkPaths");
-          pushNotificationsLinkPaths = convertTo2DArray(pushPath);
-          if (pushNotificationsLinkPaths != null && pushNotificationsLinkPaths.length > 0) {
+        if (mIntent.getExtras() != null && mIntent.getExtras().size() > 0
+                && pushNotificationsLinkPaths != null && pushNotificationsLinkPaths.length > 0) {
             singularConfig.withPushNotificationPayload(mIntent, pushNotificationsLinkPaths);
-          }
         }
 
         singularConfig.withSingularLink(mIntent, singularLinkHandler, (long) shortLinkResolveTimeOut);
       }
-
     }
 
     singularConfig.withSingularDeviceAttribution(new SingularDeviceAttributionHandler() {
