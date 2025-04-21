@@ -172,7 +172,7 @@ override func application(_ application: UIApplication, didFinishLaunchingWithOp
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
 }
     
-override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if let singularAppDelegate = SingularAppDelegate.shared() {
             singularAppDelegate.continueUserActivity(userActivity, restorationHandler:nil)
         }
