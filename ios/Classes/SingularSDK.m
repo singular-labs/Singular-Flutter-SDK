@@ -9,7 +9,6 @@
 
 static FlutterMethodChannel *channel;
 static NSDictionary *configDict;
-NSDictionary *pushNotificationPayload;
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
     channel = [FlutterMethodChannel methodChannelWithName:@"singular-api" binaryMessenger:[registrar messenger]];
@@ -206,15 +205,8 @@ NSDictionary *pushNotificationPayload;
     };
     
     config.pushNotificationLinkPath = configDict[@"pushNotificationsLinkPaths"];;
-    config.pushNotificationPayload = pushNotificationPayload;
 
     [Singular start:config];
-    
-    // reset it so that its not processed again in bg->fg
-    pushNotificationPayload = nil;
-    [SingularAppDelegate shared].openURL = nil;
-    [SingularAppDelegate shared].launchOptions = nil;
-    [SingularAppDelegate shared].userActivity = nil;
 }
 
 + (NSString *)dictionaryToJson:(NSDictionary *)data {
@@ -374,8 +366,8 @@ NSDictionary *pushNotificationPayload;
 }
 
 - (void)handlePushNotification:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    pushNotificationPayload = call.arguments[@"pushNotificationPayload"];
-    [SingularSDK initSDK];
+    NSDictionary *pushNotificationPayload = call.arguments[@"pushNotificationPayload"];
+    [Singular handlePushNotification:pushNotificationPayload];
 }
 
 - (BOOL)isFieldValid:(NSObject *)field {
