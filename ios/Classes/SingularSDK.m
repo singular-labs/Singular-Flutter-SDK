@@ -74,6 +74,8 @@ static NSDictionary *configDict;
         [self createReferrerShortLink:call withResult:result];
     } else if ([HANDLE_PUSH_NOTIFICATION isEqualToString:call.method]) {
         [self handlePushNotification:call withResult:result];
+    } else if ([SET_LIMIT_ADVERTISING_IDENTIFIERS isEqualToString:call.method]) {
+        [self setLimitAdvertisingIdentifiers:call withResult:result];
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -96,7 +98,7 @@ static NSDictionary *configDict;
     int waitForTrackingAuthorizationWithTimeoutInterval = [configDict[@"waitForTrackingAuthorizationWithTimeoutInterval"] intValue];
     float shortLinkResolveTimeOut = [configDict[@"shortLinkResolveTimeOut"] floatValue];
     NSString *customUserId = configDict[@"customUserId"];
-    BOOL limitedIdentifiersEnabled = [configDict[@"limitedIdentifiersEnabled"] boolValue];
+    BOOL limitAdvertisingIdentifiers = [configDict[@"limitAdvertisingIdentifiers"] boolValue];
 
     SingularConfig *config = [[SingularConfig alloc] initWithApiKey:apiKey andSecret:secretKey];
     config.skAdNetworkEnabled = skAdNetworkEnabled;
@@ -105,7 +107,8 @@ static NSDictionary *configDict;
     config.waitForTrackingAuthorizationWithTimeoutInterval = waitForTrackingAuthorizationWithTimeoutInterval;
     config.shortLinkResolveTimeOut = shortLinkResolveTimeOut;
     config.espDomains = configDict[@"espDomains"];
-    config.limitedIdentifiersEnabled = limitedIdentifiersEnabled;
+    config.brandedDomains = configDict[@"brandedDomains"];
+    config.limitAdvertisingIdentifiers = limitAdvertisingIdentifiers;
 
     NSArray *props = configDict[@"globalProperties"];
 
@@ -368,6 +371,11 @@ static NSDictionary *configDict;
 - (void)handlePushNotification:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSDictionary *pushNotificationPayload = call.arguments[@"pushNotificationPayload"];
     [Singular handlePushNotification:pushNotificationPayload];
+}
+
+- (void)setLimitAdvertisingIdentifiers:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    BOOL limitAdvertisingIdentifiers =  [call.arguments[@"limitAdvertisingIdentifiers"] boolValue];
+    [Singular setLimitAdvertisingIdentifiers:limitAdvertisingIdentifiers];
 }
 
 - (BOOL)isFieldValid:(NSObject *)field {

@@ -175,6 +175,9 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       case SingularConstants.CREATE_REFERRER_SHORT_LINK:
         createReferrerShortLink(call, result);
         break;
+      case SingularConstants.SET_LIMIT_ADVERTISING_IDENTIFIERS:
+        setLimitAdvertisingIdentifiers(call, result);
+        break;
       default:
         result.notImplemented();
         break;
@@ -199,7 +202,7 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     String secretKey = (String) configDict.get("secretKey");
     boolean collectOAID = (boolean) configDict.get("collectOAID");
     boolean enableLogging = (boolean) configDict.get("enableLogging");
-    boolean limitedIdentifiersEnabled = (boolean) configDict.get("limitedIdentifiersEnabled");
+    boolean limitAdvertisingIdentifiers = (boolean) configDict.get("limitAdvertisingIdentifiers");
 
     double shortLinkResolveTimeOut = (double) configDict.get("shortLinkResolveTimeOut");
 
@@ -217,8 +220,8 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       singularConfig.withLoggingEnabled();
     }
 
-    if (limitedIdentifiersEnabled) {
-      singularConfig.withLimitedIdentifiersEnabled();
+    if (limitAdvertisingIdentifiers) {
+      singularConfig.withLimitAdvertisingIdentifiers();
     }
 
     try {
@@ -253,6 +256,13 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       List<String> espDomains = (ArrayList<String>) configDict.get("espDomains");
       if (espDomains != null && espDomains.size() > 0) {
         singularConfig.withESPDomains(espDomains);
+      }
+    } catch (Throwable t) { /* intentionally unhandled */ }
+
+    try {
+      List<String> brandedDomains = (ArrayList<String>) configDict.get("brandedDomains");
+      if (brandedDomains != null && brandedDomains.size() > 0) {
+        singularConfig.withBrandedDomains(brandedDomains);
       }
     } catch (Throwable t) { /* intentionally unhandled */ }
 
@@ -478,6 +488,11 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     String version = call.argument("version");
 
     Singular.setWrapperNameAndVersion(name, version);
+  }
+
+  private void setLimitAdvertisingIdentifiers(final MethodCall call, final Result result) {
+    boolean limitAdvertisingIdentifiers = call.argument("limitAdvertisingIdentifiers");
+    Singular.setLimitAdvertisingIdentifiers(limitAdvertisingIdentifiers);
   }
 
   private void createReferrerShortLink(final MethodCall call, final Result result) {
