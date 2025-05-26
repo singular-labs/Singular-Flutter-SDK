@@ -37,7 +37,8 @@ class SingularConfig {
   List<SingularGlobalProperty> globalProperties = [];
   List <String> espDomains = [];
   int logLevel = -1;
-  bool limitedIdentifiersEnabled = false;
+  bool limitAdvertisingIdentifiers = false;
+  List <String> brandedDomains = [];
 
   // sdid
   String? customSdid;
@@ -164,6 +165,7 @@ class SingularConfig {
     configMap['enableLogging'] = enableLogging;
     configMap['logLevel'] = logLevel;
     configMap['espDomains'] = espDomains;
+    configMap['brandedDomains'] = brandedDomains;
 
     List<Map<String, dynamic>> propertiesList = [];
     for (SingularGlobalProperty prop in this.globalProperties) {
@@ -171,7 +173,7 @@ class SingularConfig {
     }
     configMap['globalProperties'] = propertiesList;
     configMap['pushNotificationsLinkPaths'] = pushNotificationsLinkPaths;
-    configMap['limitedIdentifiersEnabled'] = limitedIdentifiersEnabled;
+    configMap['limitAdvertisingIdentifiers'] = limitAdvertisingIdentifiers;
 
     return configMap;
   }

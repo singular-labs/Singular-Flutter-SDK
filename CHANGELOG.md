@@ -1,3 +1,8 @@
+## 1.7.0
+- limit advertising identifiers support
+- branded domains support
+- Updates underlying native iOS SDK to 12.8.0 and Android to 12.9.0
+
 ## 1.6.2
 - Improved SDID handling
 - Updates underlying android SDK to 12.7.2

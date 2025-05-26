@@ -59,3 +59,7 @@
 #pragma mark - push Notifications
 
 #define HANDLE_PUSH_NOTIFICATION @"handlePushNotification"
+
+#pragma mark - limit advertising identifiers
+
+#define SET_LIMIT_ADVERTISING_IDENTIFIERS @"setLimitAdvertisingIdentifiers"
