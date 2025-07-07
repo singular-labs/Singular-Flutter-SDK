@@ -48,6 +48,9 @@ class SingularConfig {
   // push notifications
   List<List<String>> pushNotificationsLinkPaths = [[]];
 
+  // google odm
+  int enableOdmWithTimeoutInterval = -1;
+
   SingularConfig(this._apiKey, this._secretKey) {
     _channel.setMethodCallHandler((MethodCall call) async {
       try {
@@ -174,6 +177,8 @@ class SingularConfig {
     configMap['globalProperties'] = propertiesList;
     configMap['pushNotificationsLinkPaths'] = pushNotificationsLinkPaths;
     configMap['limitAdvertisingIdentifiers'] = limitAdvertisingIdentifiers;
+
+    configMap['enableOdmWithTimeoutInterval'] = enableOdmWithTimeoutInterval;
 
     return configMap;
   }

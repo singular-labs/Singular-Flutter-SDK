@@ -109,6 +109,7 @@ static NSDictionary *configDict;
     config.espDomains = configDict[@"espDomains"];
     config.brandedDomains = configDict[@"brandedDomains"];
     config.limitAdvertisingIdentifiers = limitAdvertisingIdentifiers;
+    config.enableOdmWithTimeoutInterval = [configDict[@"enableOdmWithTimeoutInterval"] intValue];
 
     NSArray *props = configDict[@"globalProperties"];
 
