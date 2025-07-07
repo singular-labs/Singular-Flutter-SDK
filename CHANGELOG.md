@@ -1,3 +1,7 @@
+## 1.8.0
+- Added support for upcoming Google Ads on Device Measurement
+- Updates underlying native iOS SDK to 12.8.1 and Android to 12.9.1
+
 ## 1.7.0
 - limit advertising identifiers support
 - branded domains support
