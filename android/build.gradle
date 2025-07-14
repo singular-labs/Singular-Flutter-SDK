@@ -13,6 +13,9 @@ rootProject.allprojects {
         google()
         jcenter()
         maven { url 'https://maven.singular.net/' }
+        flatDir{
+            dirs project(':singular_flutter_sdk').file('libs')
+        }
     }
 }
 
