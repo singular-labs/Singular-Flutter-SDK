@@ -157,7 +157,7 @@ static NSDictionary *configDict;
     } else if ([SingularAppDelegate shared].openURL != nil) {
         config.openUrl = [SingularAppDelegate shared].openURL;
     } else {
-        NSLog(@"everything is null");
+        NSLog(@"[SingularSDK][INFO] everything is null");
     }
 
     config.deviceAttributionCallback = ^(NSDictionary *attributionInfo) {
