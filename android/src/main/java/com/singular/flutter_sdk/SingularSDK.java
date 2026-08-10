@@ -48,12 +48,15 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
 
   private static String[][] pushNotificationsLinkPaths;
 
+  private static Intent pendingIntent;
+
   public static void onNewIntent(Intent intent) {
     if (intent == null || intent.hashCode() == currentIntentHash) {
       return;
     }
 
     if (singularConfig == null) {
+      pendingIntent = intent;
       return;
     }
 
@@ -129,6 +132,9 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
         break;
       case SingularConstants.CUSTOM_REVENUE_WITH_ATTRIBUTES:
         customRevenueWithArgs(call, result);
+        break;
+      case SingularConstants.CUSTOM_REVENUE_WITH_ALL_ATTRIBUTES:
+        customRevenueWithAllAttributes(call, result);
         break;
       case SingularConstants.TRACKING_OPT_IN:
         trackingOptIn(call, result);
@@ -314,20 +320,25 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     List<List<String>> pushPath = (List<List<String>>) configDict.get("pushNotificationsLinkPaths");
     pushNotificationsLinkPaths = convertTo2DArray(pushPath);
 
-    if (mIntent != null) {
-      int intentHash = mIntent.hashCode();
+    // A deep link that arrived before init was parked in pendingIntent by onNewIntent. It is always
+    // newer than mIntent (captured once when the plugin attached to the Activity), so it wins.
+    // We clear it right after picking it up so a later init won't resolve the same stale intent again.
+    Intent intentToResolve = pendingIntent != null ? pendingIntent : mIntent;
+    pendingIntent = null;
+
+    if (intentToResolve != null) {
+      int intentHash = intentToResolve.hashCode();
       if (intentHash != currentIntentHash) {
         currentIntentHash = intentHash;
 
-        if (mIntent.getExtras() != null && mIntent.getExtras().size() > 0
+        if (intentToResolve.getExtras() != null && intentToResolve.getExtras().size() > 0
                 && pushNotificationsLinkPaths != null && pushNotificationsLinkPaths.length > 0) {
-            singularConfig.withPushNotificationPayload(mIntent, pushNotificationsLinkPaths);
+            singularConfig.withPushNotificationPayload(intentToResolve, pushNotificationsLinkPaths);
         }
-
-        singularConfig.withSingularLink(mIntent, singularLinkHandler, (long) shortLinkResolveTimeOut);
       }
     }
 
+    singularConfig.withSingularLink(intentToResolve, singularLinkHandler, (long) shortLinkResolveTimeOut);
     singularConfig.withSingularDeviceAttribution(new SingularDeviceAttributionHandler() {
       @Override
       public void onDeviceAttributionInfoReceived(Map<String, Object> deviceAttributionData) {
@@ -422,6 +433,19 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
     Map args = call.argument("attributes");
 
     Singular.customRevenue(eventName, currency, amount, args);
+  }
+
+  private void customRevenueWithAllAttributes(final MethodCall call, final Result result) {
+    String eventName = call.argument("eventName");
+    String currency = call.argument("currency");
+    double amount = call.argument("amount");
+    String productSKU = call.argument("productSKU");
+    String productName = call.argument("productName");
+    String productCategory = call.argument("productCategory");
+    int productQuantity = call.argument("productQuantity");
+    double productPrice = call.argument("productPrice");
+
+    Singular.customRevenue(eventName, currency, amount, productSKU, productName, productCategory, productQuantity, productPrice);
   }
 
   private void trackingOptIn(final MethodCall call, final Result result) {

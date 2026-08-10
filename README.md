@@ -25,9 +25,9 @@ A Flutter plugin for Singular SDK.
 
 ### This plugin is built for
 
-- iOS SingularSDK **v12.8.1**
+- iOS SingularSDK **v12.13.0**
 
-- Android SingularSDK **v12.9.1**
+- Android SingularSDK **v12.16.0**
 
 ---
 
@@ -37,7 +37,7 @@ You can add Singular Plugin to your Flutter app by adding following to your `pub
 
 ```yaml
 dependencies:
-  singular_flutter_sdk: ^1.8.0
+  singular_flutter_sdk: ^1.9.0
 ```
 
 Then navigate to your project in the terminal and run:
@@ -45,6 +45,13 @@ Then navigate to your project in the terminal and run:
 ```
 flutter packages get
 ```
+
+**iOS dependency managers**
+
+The iOS plugin supports both CocoaPods and Swift Package Manager, so no extra
+setup is required either way. CocoaPods supports iOS 12 and above; Swift Package
+Manager requires iOS 13, the minimum Flutter itself declares for that path.
+
 
 Before you initialize the Singular SDK, you have to create a SingularConfig object. The object contains your API key and API secret for the Singular SDK. Optionally, you can add settings to enable various SDK features.
 
@@ -127,13 +134,16 @@ Singular.init(config);
 ```
 **iOS Prerequisites**
 
+If your app uses the `UIApplicationDelegate` lifecycle, add the following to your AppDelegate.
+If your app uses the scene lifecycle (your `Info.plist` contains a `UIApplicationSceneManifest`), add the same calls to your SceneDelegate instead — see [SceneDelegate](#scene-delegate) below.
+
 *Objective-C:*
   
 In the project’s AppDelegate.m, add the following:
 
 ```objectivec
 // Top of the AppDelegate.m
-#import "SingularAppDelegate.h"
+#import <singular_flutter_sdk/SingularAppDelegate.h>
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
@@ -147,14 +157,14 @@ In the project’s AppDelegate.m, add the following:
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> *restorableObjects))restorationHandler {
 
   [[SingularAppDelegate shared] continueUserActivity:userActivity restorationHandler:restorationHandler];
-  return YES;
+  return [super application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
 
   }
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
 
     [[SingularAppDelegate shared] handleOpenUrl:url options:options];
-    return YES;
+    return [super application:app openURL:url options:options];
 
   }
 ```
@@ -172,7 +182,7 @@ override func application(_ application: UIApplication, didFinishLaunchingWithOp
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
 }
     
-override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if let singularAppDelegate = SingularAppDelegate.shared() {
             singularAppDelegate.continueUserActivity(userActivity, restorationHandler:nil)
         }
@@ -184,11 +194,76 @@ override func application(_ app: UIApplication, open url: URL, options: [UIAppli
     if let singularAppDelegate = SingularAppDelegate.shared() {
         singularAppDelegate.handleOpen(url, options: options)
     }
-   return true
+    return super.application(app, open: url, options: options)
 }
     
 ```
-  
+
+**<a id="scene-delegate"> iOS Prerequisites — SceneDelegate**
+
+Under the scene lifecycle the deep link callbacks move from the AppDelegate to the SceneDelegate, so the same Singular calls go there instead. Note that a link that launched the app arrives in `connectionOptions`, not in `launchOptions`.
+
+*Swift:*
+
+```swift
+import singular_flutter_sdk
+
+override func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    if let userActivity = connectionOptions.userActivities.first {
+        SingularAppDelegate.shared()?.userActivity = userActivity
+    } else if let urlContext = connectionOptions.urlContexts.first {
+        SingularAppDelegate.shared()?.openURL = urlContext.url
+    }
+    super.scene(scene, willConnectTo: session, options: connectionOptions)
+}
+
+override func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+    SingularAppDelegate.shared()?.continueUserActivity(userActivity, restorationHandler: nil)
+    super.scene(scene, continue: userActivity)
+}
+
+override func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+    if let url = URLContexts.first?.url {
+        SingularAppDelegate.shared()?.handleOpen(url, options: nil)
+    }
+    super.scene(scene, openURLContexts: URLContexts)
+}
+```
+
+*Objective-C:*
+
+```objectivec
+// Top of the SceneDelegate.m
+#import "SingularAppDelegate.h"
+
+- (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
+
+    NSUserActivity *userActivity = connectionOptions.userActivities.anyObject;
+    UIOpenURLContext *urlContext = connectionOptions.URLContexts.anyObject;
+
+    if (userActivity) {
+        [SingularAppDelegate shared].userActivity = userActivity;
+    } else if (urlContext) {
+        [SingularAppDelegate shared].openURL = urlContext.URL;
+    }
+    [super scene:scene willConnectToSession:session options:connectionOptions];
+}
+
+- (void)scene:(UIScene *)scene continueUserActivity:(NSUserActivity *)userActivity {
+
+    [[SingularAppDelegate shared] continueUserActivity:userActivity restorationHandler:nil];
+    [super scene:scene continueUserActivity:userActivity];
+}
+
+- (void)scene:(UIScene *)scene openURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts {
+
+    [[SingularAppDelegate shared] handleOpenUrl:URLContexts.anyObject.URL options:nil];
+    [super scene:scene openURLContexts:URLContexts];
+}
+```
+
+The snippets above assume your scene delegate subclasses `FlutterSceneDelegate`. If it implements `UIWindowSceneDelegate` directly, use the same bodies without the `override` / `super` calls.
+
 **Android Prerequisites**
 
 *Java:*  
@@ -255,3 +330,31 @@ Send Singular the APNS/FCM token in order to let it track app uninstalls.
 //Android
   Singular.registerDeviceTokenForUninstall(fcmToken);
 ```
+
+---
+
+## Developing this plugin
+
+Clone the repository into a directory named `singular_flutter_sdk`:
+
+```
+git clone git@github.com:singular-labs/Singular-Flutter-SDK.git singular_flutter_sdk
+```
+
+The directory name matters. Flutter passes the plugin to Swift Package Manager
+using the name of the directory it lives in, and Swift Package Manager requires
+that name to match the pub package name. Cloning into the repository's default
+directory name (`Singular-Flutter-SDK`) makes `example/` fail to build with:
+
+```
+unable to override package 'singular_flutter_sdk' because its identity
+'singular-flutter-sdk' doesn't match override's identity (directory name)
+'singular_flutter_sdk'
+```
+
+This affects only this repository's own `example/` app. Apps that depend on the
+published package are unaffected, since pub resolves it into a correctly named
+directory.
+
+When bumping the native iOS SDK, update the version in **both**
+`ios/singular_flutter_sdk.podspec` and `ios/singular_flutter_sdk/Package.swift`.

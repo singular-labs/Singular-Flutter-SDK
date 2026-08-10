@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:singular_flutter_sdk/singular.dart';
+import 'package:singular_flutter_sdk/attributes.dart';
+import 'package:singular_flutter_sdk/singular_ad_data.dart';
 
 class CustomEvent extends StatefulWidget {
   @override
@@ -117,6 +119,65 @@ class MainPageState extends State<CustomEvent> {
                     // Retrieve the text the that user has entered by using the
                     // TextEditingController.
                     content: Text("Event sent"),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        Center(
+          child: TextButton(
+            child: Text(
+              'Event With LDS=true',
+              style: TextStyle(fontSize: 20.0),
+            ),
+            onPressed: () {
+              String eventName = textController.text;
+              if (eventName.isEmpty) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      content: Text("Please enter a valid event name"),
+                    );
+                  },
+                );
+                return;
+              }
+
+              Map<String, dynamic> args = {
+                "key1": "value1",
+                Attributes.sngAttrLimitDataSharing: true,
+              };
+              Singular.eventWithArgs(eventName, args);
+
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Text("Event sent with per-event LDS=true"),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        Center(
+          child: TextButton(
+            child: Text(
+              'AdRevenue With LDS=false',
+              style: TextStyle(fontSize: 20.0),
+            ),
+            onPressed: () {
+              SingularAdData adData = SingularAdData('AdMob', 'USD', 0.05)
+                  .withLimitDataSharing(false);
+              Singular.adRevenue(adData);
+
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Text("AdRevenue sent with LDS=false"),
                   );
                 },
               );

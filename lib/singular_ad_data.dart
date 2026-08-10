@@ -19,6 +19,7 @@ const ADMON_PLACEMENT_ID = 'ad_placement_id';
 const IS_REVENUE_EVENT_KEY = 'is_revenue_event';
 const REVENUE_AMOUNT_KEY = 'r';
 const REVENUE_CURRENCY_KEY = 'pcc';
+const LIMIT_DATA_SHARING_ATTRIBUTE_KEY = 'sng_attr_limit_data_sharing';
 
 class SingularAdData extends MapBase<String, dynamic> {
   Map<String, dynamic> _map = {};
@@ -94,6 +95,11 @@ class SingularAdData extends MapBase<String, dynamic> {
 
   withPlacementId(String placementId) {
     this[ADMON_PLACEMENT_ID] = placementId;
+    return this;
+  }
+
+  withLimitDataSharing(bool shouldLimitDataSharing) {
+    this[LIMIT_DATA_SHARING_ATTRIBUTE_KEY] = shouldLimitDataSharing;
     return this;
   }
 

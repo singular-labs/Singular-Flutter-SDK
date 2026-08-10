@@ -31,4 +31,5 @@ class Attributes{
 	static String get sngAttrTransactionId => "sng_attr_transaction_id";
 	static String get sngAttrTutorialId => "sng_attr_tutorial_id";
 	static String get sngAttrValid => "sng_attr_valid";
+	static String get sngAttrLimitDataSharing => "sng_attr_limit_data_sharing";
 }
