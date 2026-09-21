@@ -26,5 +26,7 @@ public class SingularConstants {
     final static String SET_FCM_TOKEN = "setFCMDeviceToken";
     final static String CREATE_REFERRER_SHORT_LINK = "createReferrerShortLink";
     final static String SET_LIMIT_ADVERTISING_IDENTIFIERS = "setLimitAdvertisingIdentifiers";
+    final static String SET_USER_DETAILS = "setUserDetails";
+    final static String CLEAR_USER_DETAILS = "clearUserDetails";
 }
 

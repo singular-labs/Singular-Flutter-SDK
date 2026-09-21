@@ -1,3 +1,6 @@
+## 1.9.1
+- Updates underlying native iOS SDK to 12.14.2 and Android to 12.16.1
+
 ## 1.9.0
 - Added support for Swift package manager
 - Updates underlying native iOS SDK to 12.13.0 and Android to 12.16.0
