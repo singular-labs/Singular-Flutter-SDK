@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "singular-flutter-sdk", targets: ["singular_flutter_sdk"])
     ],
     dependencies: [
-        .package(url: "https://github.com/singular-labs/Singular-iOS-SDK.git", exact: "12.13.0")
+        .package(url: "https://github.com/singular-labs/Singular-iOS-SDK.git", exact: "12.14.2")
     ],
     targets: [
         .target(

@@ -13,6 +13,7 @@ import com.singular.sdk.Singular;
 import com.singular.sdk.SingularConfig;
 import com.singular.sdk.SingularLinkHandler;
 import com.singular.sdk.SingularLinkParams;
+import com.singular.sdk.SingularUserDetails;
 import com.singular.sdk.SingularDeviceAttributionHandler;
 
 import org.json.JSONObject;
@@ -184,6 +185,12 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
       case SingularConstants.SET_LIMIT_ADVERTISING_IDENTIFIERS:
         setLimitAdvertisingIdentifiers(call, result);
         break;
+      case SingularConstants.SET_USER_DETAILS:
+        setUserDetails(call, result);
+        break;
+      case SingularConstants.CLEAR_USER_DETAILS:
+        clearUserDetails(call, result);
+        break;
       default:
         result.notImplemented();
         break;
@@ -281,6 +288,13 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
           boolean overrideExisting = (boolean) prop.get("overrideExisting");
           singularConfig.withGlobalProperty(key, value, overrideExisting);
         }
+      }
+    } catch (Throwable t) { /* intentionally unhandled */ }
+
+    try {
+      Map userDetailsDict = (Map) configDict.get("userDetails");
+      if (userDetailsDict != null) {
+        singularConfig.withUserDetails(buildUserDetails(userDetailsDict));
       }
     } catch (Throwable t) { /* intentionally unhandled */ }
 
@@ -517,6 +531,38 @@ public class SingularSDK implements FlutterPlugin, ActivityAware, MethodCallHand
   private void setLimitAdvertisingIdentifiers(final MethodCall call, final Result result) {
     boolean limitAdvertisingIdentifiers = call.argument("limitAdvertisingIdentifiers");
     Singular.setLimitAdvertisingIdentifiers(limitAdvertisingIdentifiers);
+  }
+
+  private void setUserDetails(final MethodCall call, final Result result) {
+    Map userDetailsDict = call.argument("userDetails");
+
+    if (userDetailsDict == null || userDetailsDict.isEmpty()) {
+      Log.i("SingularSDK", "setUserDetails got null or empty user details, clearing the user details");
+      Singular.clearUserDetails();
+      return;
+    }
+
+    Singular.setUserDetails(buildUserDetails(userDetailsDict));
+  }
+
+  private void clearUserDetails(final MethodCall call, final Result result) {
+    Singular.clearUserDetails();
+  }
+
+  private static SingularUserDetails buildUserDetails(Map userDetailsDict) {
+    SingularUserDetails userDetails = new SingularUserDetails();
+    if (userDetailsDict == null) {
+      return userDetails;
+    }
+
+    userDetails.setEmail((String) userDetailsDict.get("email"));
+    userDetails.setPhoneNumber((String) userDetailsDict.get("phoneNumber"));
+    userDetails.setEmailSTD((String) userDetailsDict.get("emailSTD"));
+    userDetails.setEmailNoDots((String) userDetailsDict.get("emailNoDots"));
+    userDetails.setPhoneE164((String) userDetailsDict.get("phoneE164"));
+    userDetails.setPhoneDigits((String) userDetailsDict.get("phoneDigits"));
+
+    return userDetails;
   }
 
   private void createReferrerShortLink(final MethodCall call, final Result result) {

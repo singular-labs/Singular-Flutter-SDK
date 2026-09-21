@@ -63,3 +63,8 @@
 #pragma mark - limit advertising identifiers
 
 #define SET_LIMIT_ADVERTISING_IDENTIFIERS @"setLimitAdvertisingIdentifiers"
+
+#pragma mark - user details
+
+#define SET_USER_DETAILS @"setUserDetails"
+#define CLEAR_USER_DETAILS @"clearUserDetails"

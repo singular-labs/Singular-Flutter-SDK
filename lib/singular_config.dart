@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:singular_flutter_sdk/singular_global_property.dart';
 import 'package:singular_flutter_sdk/singular_link_params.dart';
+import 'package:singular_flutter_sdk/singular_user_details.dart';
 
 
 typedef void SingularLinksHandler(SingularLinkParams params);
@@ -39,6 +40,8 @@ class SingularConfig {
   int logLevel = -1;
   bool limitAdvertisingIdentifiers = false;
   List <String> brandedDomains = [];
+
+  SingularUserDetails? userDetails;
 
   // sdid
   String? customSdid;
@@ -180,6 +183,10 @@ class SingularConfig {
 
     configMap['enableOdmWithTimeoutInterval'] = enableOdmWithTimeoutInterval;
 
+    if (userDetails != null) {
+      configMap['userDetails'] = userDetails!.toMap;
+    }
+
     return configMap;
   }
 
@@ -189,5 +196,9 @@ class SingularConfig {
 
   void withGlobalProperty(String key, String value, bool overrideExisting) {
     this.globalProperties.add(new SingularGlobalProperty(key, value, overrideExisting));
+  }
+
+  void withUserDetails(SingularUserDetails userDetails) {
+    this.userDetails = userDetails;
   }
 }

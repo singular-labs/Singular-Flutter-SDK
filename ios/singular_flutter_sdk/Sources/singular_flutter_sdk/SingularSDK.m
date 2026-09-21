@@ -10,6 +10,8 @@
 static FlutterMethodChannel *channel;
 static NSDictionary *configDict;
 
+static NSNumber *runtimeLimitAdvertisingIdentifiers = nil;
+
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
     channel = [FlutterMethodChannel methodChannelWithName:@"singular-api" binaryMessenger:[registrar messenger]];
 
@@ -76,16 +78,22 @@ static NSDictionary *configDict;
         [self handlePushNotification:call withResult:result];
     } else if ([SET_LIMIT_ADVERTISING_IDENTIFIERS isEqualToString:call.method]) {
         [self setLimitAdvertisingIdentifiers:call withResult:result];
+    } else if ([SET_USER_DETAILS isEqualToString:call.method]) {
+        [self setUserDetails:call withResult:result];
+    } else if ([CLEAR_USER_DETAILS isEqualToString:call.method]) {
+        [Singular clearUserDetails];
     } else {
         result(FlutterMethodNotImplemented);
     }
 }
 
 + (void)initializeSingular {
-    [SingularSDK initSDK];
+    [SingularSDK initSDKAsExplicitStart:NO];
 }
 
-+ (void)initSDK {
+// isExplicitStart is YES when the app called Singular.start(), NO when a link re-opened the app
+// and we are re-running init with the config we already had.
++ (void)initSDKAsExplicitStart:(BOOL)isExplicitStart {
     if (configDict == nil) {
         return;
     }
@@ -98,7 +106,9 @@ static NSDictionary *configDict;
     int waitForTrackingAuthorizationWithTimeoutInterval = [configDict[@"waitForTrackingAuthorizationWithTimeoutInterval"] intValue];
     float shortLinkResolveTimeOut = [configDict[@"shortLinkResolveTimeOut"] floatValue];
     NSString *customUserId = configDict[@"customUserId"];
-    BOOL limitAdvertisingIdentifiers = [configDict[@"limitAdvertisingIdentifiers"] boolValue];
+    BOOL limitAdvertisingIdentifiers = runtimeLimitAdvertisingIdentifiers != nil
+        ? [runtimeLimitAdvertisingIdentifiers boolValue]
+        : [configDict[@"limitAdvertisingIdentifiers"] boolValue];
 
     SingularConfig *config = [[SingularConfig alloc] initWithApiKey:apiKey andSecret:secretKey];
     config.skAdNetworkEnabled = skAdNetworkEnabled;
@@ -117,31 +127,39 @@ static NSDictionary *configDict;
         config.logLevel = (SingularLogLevel)[logLevel integerValue];
     }
 
-    NSArray *props = configDict[@"globalProperties"];
+    if (isExplicitStart) {
+        NSArray *props = configDict[@"globalProperties"];
 
-    if (props != nil) {
-        for (NSDictionary *prop in props) {
-            NSString *key = [prop objectForKey:@"key"];
-            NSString *value = [prop objectForKey:@"value"];
-            BOOL overrideExisting = [[prop objectForKey:@"overrideExisting"]boolValue];
-            [config setGlobalProperty:key withValue:value overrideExisting:overrideExisting];
+        if (props != nil) {
+            for (NSDictionary *prop in props) {
+                NSString *key = [prop objectForKey:@"key"];
+                NSString *value = [prop objectForKey:@"value"];
+                BOOL overrideExisting = [[prop objectForKey:@"overrideExisting"]boolValue];
+                [config setGlobalProperty:key withValue:value overrideExisting:overrideExisting];
+            }
         }
-    }
 
-    if (customUserId) {
-        [Singular setCustomUserId:customUserId];
-    }
+        NSDictionary *userDetailsDict = configDict[@"userDetails"];
 
-    NSNumber *limitDataSharing = configDict[@"limitDataSharing"];
+        if ([userDetailsDict isKindOfClass:[NSDictionary class]]) {
+            config.userDetails = [SingularSDK buildUserDetails:userDetailsDict];
+        }
 
-    if (limitDataSharing != nil && ![limitDataSharing isEqual:[NSNull null]]) {
-        [Singular limitDataSharing:[limitDataSharing boolValue]];
-    }
+        if (customUserId) {
+            [Singular setCustomUserId:customUserId];
+        }
 
-    NSNumber *sessionTimeout = configDict[@"sessionTimeout"];
+        NSNumber *limitDataSharing = configDict[@"limitDataSharing"];
 
-    if ([sessionTimeout intValue] >= 0) {
-        [Singular setSessionTimeout:[sessionTimeout intValue]];
+        if (limitDataSharing != nil && ![limitDataSharing isEqual:[NSNull null]]) {
+            [Singular limitDataSharing:[limitDataSharing boolValue]];
+        }
+
+        NSNumber *sessionTimeout = configDict[@"sessionTimeout"];
+
+        if ([sessionTimeout intValue] >= 0) {
+            [Singular setSessionTimeout:[sessionTimeout intValue]];
+        }
     }
 
     config.singularLinksHandler = ^(SingularLinkParams *params) {
@@ -249,7 +267,8 @@ static NSDictionary *configDict;
 
 - (void)start:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     configDict = call.arguments;
-    [SingularSDK initSDK];
+    runtimeLimitAdvertisingIdentifiers = nil;
+    [SingularSDK initSDKAsExplicitStart:YES];
 }
 
 - (void)event:(FlutterMethodCall *)call withResult:(FlutterResult)result {
@@ -373,16 +392,16 @@ static NSDictionary *configDict;
 }
 
 - (void)skanUpdateConversionValue:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    NSString *conversionValue =  call.arguments[@"conversionValue"];
+    NSNumber *conversionValue = call.arguments[@"conversionValue"];
 
-    if ([self isFieldValid:conversionValue]) {
+    if ([SingularSDK isFieldValid:conversionValue]) {
         result(@([Singular skanUpdateConversionValue:[conversionValue integerValue]]));
     }
 }
 
 - (void)skanUpdateConversionValues:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    NSString *conversionValue =  call.arguments[@"conversionValue"];
-    NSString *coarse =  call.arguments[@"coarse"];
+    NSNumber *conversionValue = call.arguments[@"conversionValue"];
+    NSNumber *coarse = call.arguments[@"coarse"];
     BOOL lock =  [call.arguments[@"lock"] boolValue];
 
     [Singular skanUpdateConversionValue:[conversionValue integerValue] coarse:[coarse integerValue] lock:lock];
@@ -399,10 +418,11 @@ static NSDictionary *configDict;
 
 - (void)setLimitAdvertisingIdentifiers:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     BOOL limitAdvertisingIdentifiers =  [call.arguments[@"limitAdvertisingIdentifiers"] boolValue];
+    runtimeLimitAdvertisingIdentifiers = @(limitAdvertisingIdentifiers);
     [Singular setLimitAdvertisingIdentifiers:limitAdvertisingIdentifiers];
 }
 
-- (BOOL)isFieldValid:(NSObject *)field {
++ (BOOL)isFieldValid:(NSObject *)field {
     if (field == nil) {
         return NO;
     }
@@ -422,6 +442,58 @@ static NSDictionary *configDict;
     }
 
     return YES;
+}
+
+- (void)setUserDetails:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSDictionary *userDetailsDict = call.arguments[@"userDetails"];
+
+    if (![userDetailsDict isKindOfClass:[NSDictionary class]] || userDetailsDict.count == 0) {
+        NSLog(@"[SingularSDK][INFO] setUserDetails got no user details, clearing the user details");
+        [Singular clearUserDetails];
+        return;
+    }
+
+    [Singular setUserDetails:[SingularSDK buildUserDetails:userDetailsDict]];
+}
+
++ (SingularUserDetails *)buildUserDetails:(NSDictionary *)userDetailsDict {
+    SingularUserDetails *userDetails = [[SingularUserDetails alloc] init];
+
+    if (![userDetailsDict isKindOfClass:[NSDictionary class]]) {
+        return userDetails;
+    }
+
+    NSString *email = userDetailsDict[@"email"];
+    if ([SingularSDK isFieldValid:email]) {
+        [userDetails setEmail:email];
+    }
+
+    NSString *phoneNumber = userDetailsDict[@"phoneNumber"];
+    if ([SingularSDK isFieldValid:phoneNumber]) {
+        [userDetails setPhoneNumber:phoneNumber];
+    }
+
+    NSString *emailSTD = userDetailsDict[@"emailSTD"];
+    if ([SingularSDK isFieldValid:emailSTD]) {
+        [userDetails setEmailSTD:emailSTD];
+    }
+
+    NSString *emailNoDots = userDetailsDict[@"emailNoDots"];
+    if ([SingularSDK isFieldValid:emailNoDots]) {
+        [userDetails setEmailNoDots:emailNoDots];
+    }
+
+    NSString *phoneE164 = userDetailsDict[@"phoneE164"];
+    if ([SingularSDK isFieldValid:phoneE164]) {
+        [userDetails setPhoneE164:phoneE164];
+    }
+
+    NSString *phoneDigits = userDetailsDict[@"phoneDigits"];
+    if ([SingularSDK isFieldValid:phoneDigits]) {
+        [userDetails setPhoneDigits:phoneDigits];
+    }
+
+    return userDetails;
 }
 
 - (NSData *)convertHexStringToDataBytes:(NSString *)hexString {

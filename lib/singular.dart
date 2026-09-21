@@ -5,10 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:singular_flutter_sdk/singular_ad_data.dart';
 import 'package:singular_flutter_sdk/singular_config.dart';
 import 'package:singular_flutter_sdk/singular_iap.dart';
+import 'package:singular_flutter_sdk/singular_user_details.dart';
 
 const ADMON_REVENUE_EVENT_NAME = '__ADMON_USER_LEVEL_REVENUE__';
 const _SDK_NAME = 'Flutter';
-const _SDK_VERSION = '1.9.0';
+const _SDK_VERSION = '1.9.1';
 
 typedef void ShortLinkCallback(String? data, String? error);
 
@@ -118,6 +119,16 @@ class Singular {
 
   static void clearGlobalProperties() {
     _channel.invokeMethod('clearGlobalProperties');
+  }
+
+
+  static void setUserDetails(SingularUserDetails userDetails) {
+    _channel
+        .invokeMethod('setUserDetails', {'userDetails': userDetails.toMap});
+  }
+
+  static void clearUserDetails() {
+    _channel.invokeMethod('clearUserDetails');
   }
 
   /* GDPR helpers */
